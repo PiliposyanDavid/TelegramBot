@@ -11,12 +11,13 @@ class MainBotService {
     async connectNgrokUrlToTelegram() {
         const url = await this.ngrokService.init();
 
-        return axios.post(`${BaseUrl}${apiToken}/setwebhook`, {url: url}).then((response) => {
-            if (response.statusText !== "OK") {
-                console.error("WTF", response.description);
-                throw new Error("Ngrok connection error :: " + response.description);
-            }
-        });
+        return axios.post(`${BaseUrl}${apiToken}/setwebhook`, {url: url})
+            .then((response) => {
+                if (response.statusText !== "OK") {
+                    console.error("WTF", response.description);
+                    throw new Error("Ngrok connection error :: " + response.description);
+                }
+            });
     }
 }
 
