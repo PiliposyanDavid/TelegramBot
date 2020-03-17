@@ -1,32 +1,40 @@
-const createError = require('http-errors');
 const express = require('express');
-const logger = require('morgan');
-const indexRouter = require('./routes/index');
-
-const port = 80;
+const containerBootstrap = require('./container');
+const apiDocs = require('./controllers/api-docs/api-docs');
+const routes = require('./routes');
+const dbBootstrap = require('./db');
+const logger = require('log4js').getLogger('ENTRY.app');
 const app = express();
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+// Prometheus middleware for app metrics
+app.use(require('express-prometheus-middleware')({
+    metricsPath: '/metrics',
+    collectDefaultMetrics: true,
+    requestDurationBuckets: [0.1, 0.5, 1, 1.5]
+}));
+app.use(require('body-parser').json({
+    limit: 20 * 1024 * 1024, //20MB
+    extended: true
+}));
 
+require('./loggerConfig');
+const container = containerBootstrap(app);
+apiDocs(app);
+dbBootstrap(container);
+routes(app, container);
 
-app.use('/', indexRouter);
-
-app.use((req, res, next) => {
-    next(createError(404));
-});
-
+//Default Error handler
 app.use((err, req, res, next) => {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    logger.error(err);
+    res.status(500).send({
+        status: 'error',
+        message: 'something went wrong',
+    });
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+    next();
 });
 
+const port = +(process.env.NODE_PORT || 80);
 app.listen(port, () => {
-    console.log(`Listening on port ${port}`);
+    logger.info(`Server listening on port ${port}!`);
 });

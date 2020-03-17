@@ -1,11 +1,10 @@
 const axios = require('axios');
-const NgrokService = require('./ngrok-service');
 const BaseUrl = 'https://api.telegram.org/bot';
 const apiToken = '1027941776:AAEDWmjmstiGtYpObH3NjN0g9IePgVh-h4E';
 
 class MainBotService {
-    constructor() {
-        this.ngrokService = new NgrokService();
+    constructor(ngrokService) {
+        this.ngrokService = ngrokService;
     }
 
     async connectNgrokUrlToTelegram() {
