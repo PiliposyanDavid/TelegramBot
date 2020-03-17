@@ -1,2 +1,2 @@
-# node-template
-Template for project Node
+# Bot for telegram 
+test bot for fun
