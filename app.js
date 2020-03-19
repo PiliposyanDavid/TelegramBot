@@ -2,7 +2,7 @@ const express = require('express');
 const containerBootstrap = require('./container');
 const apiDocs = require('./controllers/api-docs/api-docs');
 const routes = require('./routes');
-const dbBootstrap = require('./db');
+// const dbBootstrap = require('./db');
 const logger = require('log4js').getLogger('ENTRY.app');
 const app = express();
 
@@ -20,7 +20,7 @@ app.use(require('body-parser').json({
 require('./loggerConfig');
 const container = containerBootstrap(app);
 apiDocs(app);
-dbBootstrap(container);
+// dbBootstrap(container);
 routes(app, container);
 
 //Default Error handler
