@@ -34,7 +34,7 @@ app.use((err, req, res, next) => {
     next();
 });
 
-const port = +(process.env.NODE_PORT || 80);
+const port = +(process.env.PORT || 80);
 app.listen(port, () => {
     logger.info(`Server listening on port ${port}!`);
 });
