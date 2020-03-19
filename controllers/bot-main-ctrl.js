@@ -65,7 +65,11 @@ module.exports = function BotMainCtrl(mainBotService) {
 
     async function init(req, res) {
         try {
-            await mainBotService.connectNgrokUrlToTelegram();
+            let url;
+            if (req.query.q) {
+                url = req.query.q;
+            }
+            await mainBotService.connectUrlToTelegram(url);
             return res.send({status: "success"});
         } catch (e) {
             return res.send({

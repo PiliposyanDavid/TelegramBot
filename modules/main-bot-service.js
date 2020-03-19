@@ -7,8 +7,12 @@ class MainBotService {
         this.ngrokService = ngrokService;
     }
 
-    async connectNgrokUrlToTelegram() {
-        const url = await this.ngrokService.init();
+    async connectUrlToTelegram(url) {
+        if (!url) {
+            url = await this.ngrokService.init();
+            console.log("url getting from ngrok ", url);
+        } else
+            console.log("Url set up from query", url);
 
         return axios.post(`${BaseUrl}${apiToken}/setwebhook`, {url: url})
             .then((response) => {
