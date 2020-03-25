@@ -55,6 +55,17 @@ module.exports = function BotMainCtrl(mainBotService) {
                 }).catch((error) => {
                 res.send(error);
             });
+        } else if (sentMessage.match(/txeqy voncen/gi)) {
+            axios.post(`${url}${apiToken}/sendMessage`,
+                {
+                    chat_id: chatId,
+                    text: 'txeqy laven, Gagon sevana, Hovon erevan'
+                })
+                .then((response) => {
+                    res.status(200).send(response);
+                }).catch((error) => {
+                res.send(error);
+            });
         } else {
             // if no hello present, just respond with 200
             res.status(200).send({});
