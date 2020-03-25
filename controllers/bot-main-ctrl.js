@@ -69,7 +69,16 @@ module.exports = function BotMainCtrl(mainBotService) {
             });
         } else {
             // if no hello present, just respond with 200
-            res.status(200).send({});
+            axios.post(`${url}${apiToken}/sendMessage`,
+                {
+                    chat_id: chatId,
+                    text: 'senc chexav normal ban gri'
+                })
+                .then((response) => {
+                    res.status(200).send(response);
+                }).catch((error) => {
+                res.send(error);
+            });
         }
 
 
