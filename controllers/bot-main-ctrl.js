@@ -43,6 +43,7 @@ module.exports = function BotMainCtrl(mainBotService) {
                     res.status(200).send(response);
                 }).catch((error) => {
                 res.send(error);
+
             });
         } else if (sentMessage.match(/anunt incha/gi)) {
             axios.post(`${url}${apiToken}/sendMessage`,
