@@ -19,7 +19,7 @@ async function dbBootstrap(container) {
         family: 4 // Use IPv4, skip trying IPv6
     };
 
-    const db = mongoose.createConnection(dbConnectionString, connectionOptions);
+    const db = mongoose.connect(dbConnectionString);
 
     require('./models/jokes');
     require('./models/chats');
