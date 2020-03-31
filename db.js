@@ -22,6 +22,8 @@ async function dbBootstrap(container) {
         chats: db.model('chats')
     };
 
+    console.log("connection stat", mongoose.connection.readyState);
+
     container.register('db', asValue(db));
     container.register('models', asValue(models));
 }
