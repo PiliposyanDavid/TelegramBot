@@ -4,6 +4,9 @@ class JokesDao {
     }
 
     findJokeFromNonReadedAndSorted() {
+        console.log("db", this.db);
+        console.log("collection", this.getCollection());
+
         return this.getCollection()
             .findOne({was_reading: true})
             .sort({created: -1})
