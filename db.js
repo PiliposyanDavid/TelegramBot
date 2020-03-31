@@ -23,21 +23,21 @@ async function dbBootstrap(container) {
         family: 4 // Use IPv4, skip trying IPv6
     };
 
-    const db = mongoose.connect(dbConnectionString, connectionOptions);
+    mongoose.connect(dbConnectionString, connectionOptions).then();
 
     require('./models/jokes');
     require('./models/chats');
 
     const models = {
-        jokes: db.model('jokes'),
-        chats: db.model('chats')
+        jokes: require('./models/jokes'),
+        chats: require('./models/chats')
     };
 
     console.log("connection stat", mongoose.connection.readyState);
     console.log("connection uri", dbConnectionString);
 
-    container.register('db', asValue(db));
-    container.register('models', asValue(models));
+    // container.register('db', asValue(db));
+    container.register('db', asValue(models));
 }
 
 module.exports = dbBootstrap;
