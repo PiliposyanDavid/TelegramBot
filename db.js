@@ -6,7 +6,6 @@ async function dbBootstrap(container) {
 
     const connectionOptions = {
         autoIndex: false,
-        readPreference: 'secondaryPreferred',
         useNewUrlParser: true,
         useUnifiedTopology: true,
         socketTimeoutMS: 30000
