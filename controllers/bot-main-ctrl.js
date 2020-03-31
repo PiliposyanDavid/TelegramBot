@@ -2,85 +2,34 @@ const axios = require('axios');
 const url = 'https://api.telegram.org/bot';
 const apiToken = '1027941776:AAEDWmjmstiGtYpObH3NjN0g9IePgVh-h4E';
 
-module.exports = function BotMainCtrl(mainBotService) {
+module.exports = function BotMainCtrl(mainBotService, chatsService) {
     this.handleMessages = handleMessages;
     this.init = init;
 
-    function handleMessages(req, res) {
+    async function handleMessages(req, res) {
         console.log(req.body);
         const chatId = req.body.message.chat.id;
+        const userId = req.body.message.from.id;
+        const firstName = req.body.message.from.first_name;
+        const lastName = req.body.message.from.last_name;
         const sentMessage = req.body.message.text;
 
-        if (sentMessage.match(/barev/gi)) {
-            axios.post(`${url}${apiToken}/sendMessage`,
+        if (sentMessage === "/start") {
+            await chatsService.create(chatId, firstName, lastName, userId);
+            await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,
-                    text: 'hazar bari 👋'
-                })
-                .then((response) => {
-                    res.status(200).send(response);
-                }).catch((error) => {
-                res.send(error);
-            });
-        } else if (sentMessage.match(/vonces/gi)) {
-            axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: 'normal du?'
-                })
-                .then((response) => {
-                    res.status(200).send(response);
-                }).catch((error) => {
-                res.send(error);
-            });
-        } else if (sentMessage.match(/chem/gi)) {
-            axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: 'apsos'
-                })
-                .then((response) => {
-                    res.status(200).send(response);
-                }).catch((error) => {
-                res.send(error);
-
-            });
-        } else if (sentMessage.match(/anunt incha/gi)) {
-            axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: 'Es anun chunem es bot em ete uzumes boti masin texekutyun stanas mti https://www.cloudflare.com/learning/bots/what-is-a-bot/'
-                })
-                .then((response) => {
-                    res.status(200).send(response);
-                }).catch((error) => {
-                res.send(error);
-            });
-        } else if (sentMessage.match(/txeqy voncen/gi)) {
-            axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: 'txeqy laven, Gagon sevana, Hovon erevan'
-                })
-                .then((response) => {
-                    res.status(200).send(response);
-                }).catch((error) => {
-                res.send(error);
-            });
+                    text: `Barev ${firstName} jan 👋, dzez maxtum enq urax jamanac`
+                });
         } else {
             // if no hello present, just respond with 200
-            axios.post(`${url}${apiToken}/sendMessage`,
+            await chatsService.addMessage(chatId, sentMessage);
+            await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,
-                    text: 'senc chexav normal ban gri'
-                })
-                .then((response) => {
-                    res.status(200).send(response);
-                }).catch((error) => {
-                res.send(error);
-            });
+                    text: 'Ete smsn injvor patasxan aknkalox e, apa kkapnvenq dzer het, hakarak depqum kxndrei chgrel !!!'
+                });
         }
-
 
     }
 
@@ -90,6 +39,7 @@ module.exports = function BotMainCtrl(mainBotService) {
             if (req.query.q) {
                 url = req.query.q;
             }
+
             await mainBotService.connectUrlToTelegram(url);
             return res.send({status: "success"});
         } catch (e) {
