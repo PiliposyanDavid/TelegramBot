@@ -5,9 +5,11 @@ async function dbBootstrap(container) {
     const dbConnectionString = process.env.MONGODB_URI || "xuyevo";
 
     const connectionOptions = {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
     };
 
-    const db = mongoose.createConnection(dbConnectionString, {useNewUrlParser: true});
+    const db = mongoose.createConnection(dbConnectionString, connectionOptions);
 
     require('./models/jokes');
     require('./models/chats');
