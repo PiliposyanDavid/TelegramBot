@@ -21,6 +21,7 @@ async function dbBootstrap(container) {
 
     console.log("connection stat", mongoose.connection.readyState);
     console.log("connection uri", dbConnectionString);
+    console.log("db", db);
 
     container.register('db', asValue(db));
     container.register('models', asValue(models));
