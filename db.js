@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const {asValue} = require('@shahen.poghosyan/awilix');
 
 async function dbBootstrap(container) {
-    const dbConnectionString = "mongodb://heroku_zr0p08s0:4as6v9ahc4kp2dbahs7qrdmrpa@ds219983.mlab.com:19983/heroku_zr0p08s0";
+    const dbConnectionString = process.env.MONGODB_URI || "xuyevo";
 
     const connectionOptions = {
         autoIndex: false,
@@ -23,6 +23,7 @@ async function dbBootstrap(container) {
     };
 
     console.log("connection stat", mongoose.connection.readyState);
+    console.log("connection uri", dbConnectionString);
 
     container.register('db', asValue(db));
     container.register('models', asValue(models));
