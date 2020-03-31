@@ -16,21 +16,23 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
 
         if (sentMessage === "/start") {
             await chatsService.create(chatId, firstName, lastName, userId);
-            await axios.post(`${url}${apiToken}/sendMessage`,
+            const response = await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,
                     text: `Barev ${firstName} jan 👋, dzez maxtum enq urax jamanac`
                 });
+
+            return res.status(200).send(response);
         } else {
             // if no hello present, just respond with 200
             await chatsService.addMessage(chatId, sentMessage);
-            await axios.post(`${url}${apiToken}/sendMessage`,
+            const response = await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,
                     text: 'Ete smsn injvor patasxan aknkalox e, apa kkapnvenq dzer het, hakarak depqum kxndrei chgrel !!!'
                 });
+            return res.status(200).send(response);
         }
-
     }
 
     async function init(req, res) {
