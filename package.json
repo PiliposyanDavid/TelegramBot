@@ -10,6 +10,7 @@
     "@shahen.poghosyan/awilix": "^4.2.3",
     "assert": "^2.0.0",
     "axios": "^0.19.2",
+    "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",

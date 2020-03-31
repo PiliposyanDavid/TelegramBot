@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
+const Promise = require('bluebird')
 const {asValue} = require('@shahen.poghosyan/awilix');
 
 async function dbBootstrap(container) {
+    mongoose.Promise = Promise;
+
     const dbConnectionString = process.env.MONGODB_URI || "xuyevo";
 
     const connectionOptions = {
