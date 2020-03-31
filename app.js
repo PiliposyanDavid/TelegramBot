@@ -17,13 +17,6 @@ app.use(require('body-parser').json({
     extended: true
 }));
 
-require('./loggerConfig');
-const container = containerBootstrap(app);
-apiDocs(app);
-dbBootstrap(container);
-routes(app, container);
-
-
 process.on("unhandledRejection", (reason, promise) => {
     const logData = {
         error_type: 'unhandled_rejection',
@@ -51,6 +44,12 @@ app.use((err, req, res, next) => {
 
     next();
 });
+
+require('./loggerConfig');
+const container = containerBootstrap(app);
+apiDocs(app);
+dbBootstrap(container);
+routes(app, container);
 
 const port = +(process.env.PORT || 80);
 app.listen(port, () => {
