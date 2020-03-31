@@ -5,6 +5,11 @@ async function dbBootstrap(container) {
     const dbConnectionString = "mongodb://david3ngeener:032dp333@ds219983.mlab.com:19983/heroku_zr0p08s0";
 
     const connectionOptions = {
+        autoIndex: false,
+        readPreference: 'secondaryPreferred',
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        socketTimeoutMS: 30000
     };
 
     const db = mongoose.createConnection(dbConnectionString, connectionOptions);
