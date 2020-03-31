@@ -17,6 +17,11 @@ app.use(require('body-parser').json({
     extended: true
 }));
 
+const port = +(process.env.PORT || 80);
+app.listen(port, () => {
+    logger.info(`Server listening on port ${port}!`);
+});
+
 process.on("unhandledRejection", (reason, promise) => {
     const logData = {
         error_type: 'unhandled_rejection',
@@ -50,8 +55,3 @@ const container = containerBootstrap(app);
 apiDocs(app);
 dbBootstrap(container);
 routes(app, container);
-
-const port = +(process.env.PORT || 80);
-app.listen(port, () => {
-    logger.info(`Server listening on port ${port}!`);
-});
