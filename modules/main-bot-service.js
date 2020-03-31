@@ -11,16 +11,16 @@ class MainBotService {
         if (!url) {
             url = await this.ngrokService.init();
             console.log("url getting from ngrok ", url);
-        } else
+        } else {
             console.log("Url set up from query", url);
+        }
 
-        return axios.post(`${BaseUrl}${apiToken}/setwebhook`, {url: url})
-            .then((response) => {
-                if (response.statusText !== "OK") {
-                    console.error("WTF", response.description);
-                    throw new Error("Ngrok connection error :: " + response.description);
-                }
-            });
+        const response = await axios.post(`${BaseUrl}${apiToken}/setwebhook`, {url: url})
+        if (response.statusText !== "OK") {
+            console.error("WTF", response.description);
+            throw new Error("Ngrok connection error :: " + response.description);
+        }
+
     }
 }
 

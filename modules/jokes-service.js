@@ -1,4 +1,4 @@
-const assert = require('assert')
+const assert = require('assert');
 
 class JokesService {
     constructor(jokesDao) {
