@@ -5,7 +5,11 @@ const {asValue} = require('@shahen.poghosyan/awilix');
 async function dbBootstrap(container) {
     mongoose.Promise = Promise;
 
-    const dbConnectionString = process.env.MONGODB_URI || "xuyevo";
+    const dbConnectionString =
+        process.env.MONGOLAB_URI ||
+        process.env.MONGOHQ_URL ||
+        process.env.MONGODB_URI ||
+        "xuyevo";
 
     const connectionOptions = {
         useNewUrlParser: true,
@@ -19,7 +23,7 @@ async function dbBootstrap(container) {
         family: 4 // Use IPv4, skip trying IPv6
     };
 
-    const db = mongoose.connect(dbConnectionString);
+    const db = mongoose.connect(dbConnectionString, connectionOptions);
 
     require('./models/jokes');
     require('./models/chats');
