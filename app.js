@@ -2,7 +2,7 @@ const express = require('express');
 const containerBootstrap = require('./container');
 const apiDocs = require('./controllers/api-docs/api-docs');
 const routes = require('./routes');
-// const dbBootstrap = require('./db');
+const dbBootstrap = require('./db');
 const logger = require('log4js').getLogger('ENTRY.app');
 const app = express();
 
@@ -20,8 +20,26 @@ app.use(require('body-parser').json({
 require('./loggerConfig');
 const container = containerBootstrap(app);
 apiDocs(app);
-// dbBootstrap(container);
+dbBootstrap(container);
 routes(app, container);
+
+
+process.on("unhandledRejection", (reason, promise) => {
+    const logData = {
+        error_type: 'unhandled_rejection',
+        stack: reason.stack,
+        message: reason.message
+    };
+    console.log(logData);
+});
+
+process.on('uncaughtException', (err) => {
+    console.log({
+        error_type: 'exception',
+        error_message: err.message || err,
+        stack: err.stack
+    });
+});
 
 //Default Error handler
 app.use((err, req, res, next) => {
