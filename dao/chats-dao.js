@@ -19,7 +19,7 @@ class ChatsDao {
     }
 
     findAllChats() {
-        return this.getCollection().find();
+        return this.getCollection().find().lean().exec();
     }
 
     addMessage(chatId, message) {

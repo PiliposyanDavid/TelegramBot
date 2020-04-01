@@ -8,6 +8,10 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
     this.handleMessages = handleMessages;
     this.init = init;
 
+    this.initJob = initJob;
+    this.startJob = startJob;
+    this.stopJob = stopJob;
+
     async function handleMessages(req, res) {
         console.log(req.body);
 
@@ -57,6 +61,36 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
                     error_message: e
                 }
             });
+        }
+    }
+
+    async function initJob(req, res) {
+        try {
+            await mainBotService.initJob();
+            return res.send({status: "success"});
+        } catch (err) {
+            logger.error("Error in initialization ", err);
+            return res.send({status: "error", response: err});
+        }
+    }
+
+    async function startJob(req, res) {
+        try {
+            await mainBotService.startJob();
+            return res.send({status: "success"});
+        } catch (err) {
+            logger.error("Error in starting job ", err);
+            return res.send({status: "error", response: err});
+        }
+    }
+
+    async function stopJob(req, res) {
+        try {
+            await mainBotService.stopJob();
+            return res.send({status: "success"});
+        } catch (err) {
+            logger.error("Error in stop job ", err);
+            return res.send({status: "error", response: err});
         }
     }
 };
