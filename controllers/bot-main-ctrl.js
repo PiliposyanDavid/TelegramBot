@@ -15,7 +15,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
         const sentMessage = req.body.message.text;
 
         if (sentMessage === "/start") {
-            await chatsService.create(chatId, firstName, lastName, userId);
+            await chatsService.createIfNotExists(chatId, firstName, lastName, userId);
             await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,

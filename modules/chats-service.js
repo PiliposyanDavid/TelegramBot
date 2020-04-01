@@ -5,11 +5,14 @@ class ChatsService {
         this.chatsDao = chatsDao;
     }
 
-    create(chatId, firstName, lastName, userId) {
+    async createIfNotExists(chatId, firstName, lastName, userId) {
         assert(chatId, "chatId missed");
         assert(userId, "userId missed");
         assert(lastName, "lastName missed");
         assert(firstName, "firstName missed");
+
+        const chat = await this.chatsDao.findChatByUserId(userId);
+        if (chat) return chat;
 
         return this.chatsDao.create(chatId, firstName, lastName, userId);
     }

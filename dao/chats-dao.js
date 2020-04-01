@@ -14,6 +14,10 @@ class ChatsDao {
         });
     }
 
+    findChatByUserId(userId) {
+        return this.getCollection().findOne({user_id: userId});
+    }
+
     findAllChats() {
         return this.getCollection().find();
     }
