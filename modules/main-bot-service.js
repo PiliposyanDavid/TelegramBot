@@ -17,7 +17,7 @@ class MainBotService {
     async initJob() {
         const that = this;
         // 0 0 11-22 * * *
-        this.job = new CronJob('0 * * * * *', this.jobLogic(), null, true).start();
+        this.job = new CronJob('0 * * * * *', this.jobLogic().bind(that), null, true).start();
     }
 
     async startJob() {
