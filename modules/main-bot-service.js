@@ -15,29 +15,9 @@ class MainBotService {
     }
 
     async initJob() {
-
         const that = this;
         // 0 0 11-22 * * *
-        this.job = new CronJob('0 * * * * *', async function () {
-            logger.info("Start job");
-
-            const joke = await that.jokesService.getJokeFromNonReadedAndSorted();
-
-            if (!joke || !joke.text) {
-                logger.error("joke not found");
-                return;
-            } else {
-                logger.info("joke text ::", joke.text);
-            }
-
-            await axios.post(`${BaseUrl}${apiToken}/sendMessage`,
-                {
-                    chat_id: 938812149,
-                    text: "barev"
-                });
-
-            logger.info("finish !!!")
-        }, null, true).start();
+        this.job = new CronJob('0 * * * * *', this.jobLogic(), null, true).start();
     }
 
     async startJob() {
@@ -60,24 +40,24 @@ class MainBotService {
         // } else {
         //     logger.info(`Chat ids length ${chatIds.length}`);
         // }
-        // logger.info("Start job");
-        //
-        // const joke = await this.jokesService.getJokeFromNonReadedAndSorted();
-        //
-        // if (!joke || !joke.text) {
-        //     logger.error("joke not found");
-        //     return;
-        // } else {
-        //     logger.info("joke text ::", joke.text);
-        // }
-        //
-        // await axios.post(`${BaseUrl}${apiToken}/sendMessage`,
-        //     {
-        //         chat_id: 938812149,
-        //         text: "barev"
-        //     });
-        //
-        // logger.info("finish !!!")
+        logger.info("Start job");
+
+        const joke = await this.jokesService.getJokeFromNonReadedAndSorted();
+
+        if (!joke || !joke.text) {
+            logger.error("joke not found");
+            return;
+        } else {
+            logger.info("joke text ::", joke.text);
+        }
+
+        await axios.post(`${BaseUrl}${apiToken}/sendMessage`,
+            {
+                chat_id: 938812149,
+                text: "barev"
+            });
+
+        logger.info("finish !!!")
 
         // const promises = [];
         // chatIds.forEach((chatId) => {
