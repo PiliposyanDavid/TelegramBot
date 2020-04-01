@@ -5,7 +5,7 @@ class JokesDao {
 
     findJokeFromNonReadedAndSorted() {
         return this.getCollection()
-            .findOne({was_reading: true})
+            .findOne({was_reading: false})
             .sort({created: -1})
     }
 
