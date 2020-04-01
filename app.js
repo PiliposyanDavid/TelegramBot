@@ -27,11 +27,11 @@ process.on("unhandledRejection", (reason, promise) => {
         stack: reason.stack,
         message: reason.message
     };
-    console.log(logData);
+    console.log("catch up from unhandledRejection", logData);
 });
 
 process.on('uncaughtException', (err) => {
-    console.log({
+    console.log("catch up from uncaughtException", {
         error_type: 'exception',
         error_message: err.message || err,
         stack: err.stack
