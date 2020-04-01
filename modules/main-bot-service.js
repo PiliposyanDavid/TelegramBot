@@ -15,11 +15,13 @@ class MainBotService {
     }
 
     async initJob() {
+
+        const that = this;
         // 0 0 11-22 * * *
         this.job = new CronJob('0 * * * * *', async function () {
             logger.info("Start job");
 
-            const joke = await this.jokesService.getJokeFromNonReadedAndSorted();
+            const joke = await that.jokesService.getJokeFromNonReadedAndSorted();
 
             if (!joke || !joke.text) {
                 logger.error("joke not found");
