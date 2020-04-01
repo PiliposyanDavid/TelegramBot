@@ -16,7 +16,7 @@ class MainBotService {
 
     async initJob() {
         // 0 0 11-22 * * *
-        this.job = new CronJob('0 * * * * *', this.jobLogic());
+        this.job = new CronJob('* * * * * *', this.jobLogic());
     }
 
     async startJob() {
@@ -53,7 +53,7 @@ class MainBotService {
         await axios.post(`${BaseUrl}${apiToken}/sendMessage`,
             {
                 chat_id: 938812149,
-                text: joke.text
+                text: "barev"
             });
 
         logger.info("finish !!!")
