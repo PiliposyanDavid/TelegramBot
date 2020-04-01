@@ -17,8 +17,46 @@ class MainBotService {
     async initJob() {
         const that = this;
         // 0 0 11-22 * * *
-        this.job = new CronJob('0 52 19 * * *', function () {
-            console.log("------------------------------------------------------------------------")
+        this.job = new CronJob('0 55 15 * * *', async function () {
+            logger.info("Start job");
+            try {
+                const chats = await that.chatsService.getAllChats();
+                const chatIds = (chats || [])
+                    .map((chat) => chat.chat_id)
+                    .filter(Boolean);
+
+                if (!chatIds.length) {
+                    logger.error("chat ids not found");
+                    return;
+                } else {
+                    logger.info(`Chat ids length ${chatIds.length}`);
+                }
+
+                const joke = await that.jokesService.getJokeFromNonReadedAndSorted();
+
+                if (!joke || !joke.text) {
+                    logger.error("joke not found");
+                    return;
+                } else {
+                    logger.info("joke text ::", joke.text);
+                }
+
+
+                const promises = [];
+                chatIds.forEach((chatId) => {
+                    promises.push(axios.post(`${BaseUrl}${apiToken}/sendMessage`,
+                        {
+                            chat_id: chatId,
+                            text: joke.text
+                        }))
+                });
+
+                await Promise.all(promises);
+                await that.jokesService.updateJokeReaded(joke.id);
+                logger.info("finish successfully !!!")
+            } catch (err) {
+                logger.error("Error in job !!!", err);
+            }
         }, null, true).start();
     }
 
@@ -30,49 +68,6 @@ class MainBotService {
         this.job.stop();
     }
 
-    async jobLogic() {
-        // const chats = await this.chatsService.getAllChats();
-        // const chatIds = (chats || [])
-        //     .map((chat) => chat.chat_id)
-        //     .filter(Boolean);
-        //
-        // if (!chatIds.length) {
-        //     logger.error("chat ids not found");
-        //     return;
-        // } else {
-        //     logger.info(`Chat ids length ${chatIds.length}`);
-        // }
-        logger.info("Start job");
-
-        const joke = await this.jokesService.getJokeFromNonReadedAndSorted();
-
-        if (!joke || !joke.text) {
-            logger.error("joke not found");
-            return;
-        } else {
-            logger.info("joke text ::", joke.text);
-        }
-
-        await axios.post(`${BaseUrl}${apiToken}/sendMessage`,
-            {
-                chat_id: 938812149,
-                text: "barev"
-            });
-
-        logger.info("finish !!!")
-
-        // const promises = [];
-        // chatIds.forEach((chatId) => {
-        //     promises.push(axios.post(`${BaseUrl}${apiToken}/sendMessage`,
-        //         {
-        //             chat_id: chatId,
-        //             text: joke.text
-        //         }))
-        // });
-        //
-        // await Promise.all(promises);
-        // await this.jokesService.updateJokeReaded(joke.id);
-    }
 
     async connectUrlToTelegram(url) {
         if (!url) {
