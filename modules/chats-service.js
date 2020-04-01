@@ -1,3 +1,5 @@
+const logger = require('log4js').getLogger('ChatsService.srv');
+
 const assert = require('assert');
 
 class ChatsService {
@@ -12,7 +14,9 @@ class ChatsService {
         assert(firstName, "firstName missed");
 
         const chat = await this.chatsDao.findChatByUserId(userId);
-        if (chat) return chat;
+        if (chat) {
+            return chat;
+        }
 
         return this.chatsDao.create(chatId, firstName, lastName, userId);
     }

@@ -1,3 +1,5 @@
+const logger = require('log4js').getLogger('ChatsService.srv');
+
 const axios = require('axios');
 const url = 'https://api.telegram.org/bot';
 const apiToken = '1027941776:AAEDWmjmstiGtYpObH3NjN0g9IePgVh-h4E';
@@ -8,11 +10,14 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
 
     async function handleMessages(req, res) {
         console.log(req.body);
+
         const chatId = req.body.message.chat.id;
         const userId = req.body.message.from.id;
         const firstName = req.body.message.from.first_name;
         const lastName = req.body.message.from.last_name;
         const sentMessage = req.body.message.text;
+
+        logger.info("info message", sentMessage);
 
         if (sentMessage === "/start") {
             await chatsService.createIfNotExists(chatId, firstName, lastName, userId);
