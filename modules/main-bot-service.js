@@ -44,6 +44,7 @@ class MainBotService {
 
                 const promises = [];
                 chatIds.forEach((chatId) => {
+                    logger.info("chat id ", chatId);
                     promises.push(axios.post(`${BaseUrl}${apiToken}/sendMessage`,
                         {
                             chat_id: chatId,
