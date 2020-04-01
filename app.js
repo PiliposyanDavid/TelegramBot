@@ -1,6 +1,5 @@
 const express = require('express');
 const containerBootstrap = require('./container');
-const apiDocs = require('./controllers/api-docs/api-docs');
 const routes = require('./routes');
 const dbBootstrap = require('./db');
 const logger = require('log4js').getLogger('ENTRY.app');
@@ -52,6 +51,5 @@ app.use((err, req, res, next) => {
 
 require('./loggerConfig');
 const container = containerBootstrap(app);
-apiDocs(app);
 dbBootstrap(container);
 routes(app, container);
