@@ -17,7 +17,7 @@ class MainBotService {
     async initJob() {
         const that = this;
         // 0 0 11-22 * * *
-        this.job = new CronJob('0 0 7-19 * * *', async function () {
+        this.job = new CronJob('0 0 7-20 * * *', async function () {
             logger.info("Start job");
             try {
                 const chats = await that.chatsService.getAllChats();
@@ -67,7 +67,6 @@ class MainBotService {
     async stopJob() {
         this.job.stop();
     }
-
 
     async connectUrlToTelegram(url) {
         if (!url) {
