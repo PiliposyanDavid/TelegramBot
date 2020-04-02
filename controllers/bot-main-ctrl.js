@@ -26,6 +26,8 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
         if ((req.body.message && req.body.message.new_chat_participant && req.body.message.new_chat_participant.is_bot)
             || (req.body.message && req.body.message.new_chat_member && req.body.message.new_chat_member.is_bot)) {
 
+            logger.warn("its a bot. chat id", chatId, "userId", userId, "firstName", firstName, "message", sentMessage);
+
             await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,
