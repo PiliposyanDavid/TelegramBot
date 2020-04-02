@@ -50,7 +50,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((req, res, next) => {
-    logger.info("path", req.path, "query", req.query, "body", req.body);
+    logger.info("path", req.path, "query", JSON.stringify(req.query), "body", JSON.stringify(req.body));
     next();
 });
 
