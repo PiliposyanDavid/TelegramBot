@@ -49,6 +49,11 @@ app.use((err, req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    logger.info("path", req.path);
+    next();
+});
+
 require('./loggerConfig');
 const container = containerBootstrap(app);
 dbBootstrap(container);

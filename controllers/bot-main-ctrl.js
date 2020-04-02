@@ -23,8 +23,21 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
 
         logger.info("info message", sentMessage);
 
+        if ((req.body.message && req.body.message.new_chat_participant && req.body.message.new_chat_participant.is_bot)
+            || (req.body.message && req.body.message.new_chat_member && req.body.message.new_chat_member.is_bot)) {
+
+            await axios.post(`${url}${apiToken}/sendMessage`,
+                {
+                    chat_id: chatId,
+                    text: `Please leave this chat`
+                });
+
+            return res.status(200).send({statusText: "OK"});
+        }
+
+        await chatsService.createIfNotExists(chatId, firstName, lastName, userId);
+
         if (sentMessage === "/start") {
-            await chatsService.createIfNotExists(chatId, firstName, lastName, userId);
             await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,
