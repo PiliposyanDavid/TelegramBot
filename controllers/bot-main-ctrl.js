@@ -13,7 +13,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
     this.stopJob = stopJob;
 
     async function handleMessages(req, res) {
-        console.log(req.body);
 
         const chatId = req.body.message.chat.id;
         const userId = req.body.message.from.id;
@@ -23,41 +22,47 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
 
         logger.info("info message", sentMessage);
 
-        if ((req.body.message && req.body.message.new_chat_participant && req.body.message.new_chat_participant.is_bot)
-            || (req.body.message && req.body.message.new_chat_member && req.body.message.new_chat_member.is_bot)) {
-
-            logger.warn("its a bot. chat id", chatId, "userId", userId, "firstName", firstName, "message", sentMessage);
-
-            await axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: `Please leave this chat`
-                });
-
-            return res.status(200).send({statusText: "OK"});
-        }
 
         await chatsService.createIfNotExists(chatId, firstName, lastName, userId);
 
         if (sentMessage === "/start") {
+            return handleInitialCase();
+        }
+
+        if (sentMessage.includes('/joke')) {
+            return addJokeToReview()
+        }
+
+        await chatsService.addMessage(chatId, sentMessage);
+        await axios.post(`${url}${apiToken}/sendMessage`,
+            {
+                chat_id: chatId,
+                text: 'Մենք կկապնվենք Ձեզ հետ, եթե կա դրա կարիքն'
+            });
+        return res.status(200).send({statusText: "OK"});
+
+        async function handleInitialCase() {
             await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,
-                    text: `Barev ${firstName} jan 👋, dzez maxtum enq urax jamanac`
+                    text: `Ողջույն ${firstName} 👋,
+                    \nԵթե ցանկանում եք անեկդոտ գրել ապա, տեքստի առջևում գրել /jok որից հետո բուն տեքտն, ցանկալի է գրել հայատառ Օրինակ ՝ 
+                    \n /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։
+                    \nՀաճելի ժամանց Ձեզ։`
                 });
 
             return res.status(200).send({statusText: "OK"});
         }
 
+        async function addJokeToReview() {
+            await axios.post(`${url}${apiToken}/sendMessage`,
+                {
+                    chat_id: chatId,
+                    text: `Ողջույն ${firstName} 👋, Ձեր անեկդոտն ստուգվելուց հետո կցուցադրվի բոլորին`
+                });
 
-        // if no hello present, just respond with 200
-        await chatsService.addMessage(chatId, sentMessage);
-        await axios.post(`${url}${apiToken}/sendMessage`,
-            {
-                chat_id: chatId,
-                text: 'Ete smsn injvor patasxan aknkalox e, apa kkapnvenq dzer het, hakarak depqum kxndrei chgrel !!!'
-            });
-        return res.status(200).send({statusText: "OK"});
+            return res.status(200).send({statusText: "OK"});
+        }
     }
 
     async function init(req, res) {
@@ -108,4 +113,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
             return res.send({status: "error", response: err});
         }
     }
+
+
 };

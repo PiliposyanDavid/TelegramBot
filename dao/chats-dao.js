@@ -4,7 +4,6 @@ class ChatsDao {
     }
 
     create(chatId, firstName, lastName, userId) {
-
         return this.getCollection().create({
             chat_id: chatId,
             first_name: firstName,
@@ -24,6 +23,14 @@ class ChatsDao {
 
     addMessage(chatId, message) {
         return this.getCollection().update({chat_id: chatId}, {$push: {messages: message}});
+    }
+
+    addReadedJokeId(userId, jokeId) {
+        return this.getCollection().update({user_id: userId}, {$addToSet: {readed_jokes_ids: jokeId}});
+    }
+
+    addUnreadJokeId(userId, jokeId) {
+        return this.getCollection().update({user_id: userId}, {$addToSet: {unread_jokes_ids: jokeId}});
     }
 
     getCollection() {

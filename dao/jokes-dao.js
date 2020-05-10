@@ -3,20 +3,30 @@ class JokesDao {
         this.db = db;
     }
 
-    findJokeFromNonReadedAndSorted() {
+    findUnreadJokeForChat(userId, over18 = false) {
         return this.getCollection()
-            .findOne({was_reading: false})
+            .findOne({over_18: over18, readed_user_ids: {$nin: [userId]}})
             .sort({created: -1})
+            .lean()
+            .exec()
     }
 
-    addJoke(text) {
+    addJoke(text, over18) {
         return this.getCollection()
-            .create({was_reading: false, text: text, created: Date.now()});
+            .create({over_18: over18, text: text, created: Date.now()});
     }
 
-    updateJokeReaded(id) {
+    updateJokeReadedForUser(jokeId, userId) {
         return this.getCollection()
-            .update({_id: id}, {$set: {was_reading: true}});
+            .update({_id: jokeId}, {$addToSet: {readed_user_ids: userId}});
+    }
+
+    findJoke(id) {
+        return this.getCollection()
+            .findOne({_id: id})
+            .sort({created: -1})
+            .lean()
+            .exec()
     }
 
     getCollection() {

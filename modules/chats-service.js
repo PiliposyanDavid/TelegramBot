@@ -25,6 +25,26 @@ class ChatsService {
         return this.chatsDao.findAllChats();
     }
 
+    getChatByUserId(userId) {
+        assert(userId, "userId missed");
+
+        return this.chatsDao.findChatByUserId(userId)
+    }
+
+    addJokeIdToReadedForUser(userId, jokeId) {
+        assert(userId, "userId missed");
+        assert(jokeId, "jokeId missed");
+
+        return this.chatsDao.addReadedJokeId(userId, jokeId)
+    }
+
+    addJokeIdToUnreadForUser(userId, jokeId) {
+        assert(userId, "userId missed");
+        assert(jokeId, "jokeId missed");
+
+        return this.chatsDao.addUnreadJokeId(userId, jokeId)
+    }
+
 
     addMessage(chatId, message) {
         assert(chatId, "chatId missed");

@@ -5,20 +5,27 @@ class JokesService {
         this.jokesDao = jokesDao;
     }
 
-    getJokeFromNonReadedAndSorted() {
-        return this.jokesDao.findJokeFromNonReadedAndSorted();
+    getJokeFromNonReadedAndSorted(userId, over18) {
+        return this.jokesDao.findUnreadJokeForChat(userId, over18);
     }
 
-    addJoke(text) {
-        assert(text, "text missed");
-
-        return this.jokesDao.addJoke(text);
-    }
-
-    updateJokeReaded(id) {
+    getJoke(id) {
         assert(id, "id missed");
+        return this.jokesDao.findJoke(id)
+    }
 
-        return this.jokesDao.updateJokeReaded(id);
+    addJoke(text, over18) {
+        assert(text, "text missed");
+        assert(over18, " over18 missed");
+
+        return this.jokesDao.addJoke(text, over18);
+    }
+
+    updateJokeReaded(id, userId) {
+        assert(id, "id missed");
+        assert(userId, "userId missed");
+
+        return this.jokesDao.updateJokeReadedForUser(id, userId);
     }
 }
 

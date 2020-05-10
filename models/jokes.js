@@ -4,7 +4,8 @@ const {Schema} = mongoose;
 const Jokes = new Schema({
     created: {type: Date, default: Date.now()},
     text: {type: String},
-    was_reading: {type: Boolean, default: false}
+    readed_user_ids: {type: [], default: [], index: true},
+    over_18: {type: Boolean, index: true}
 });
 
 module.exports = mongoose.model('jokes', Jokes);

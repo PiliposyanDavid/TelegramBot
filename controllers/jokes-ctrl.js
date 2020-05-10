@@ -4,9 +4,12 @@ module.exports = function JokesCtrl(jokesService) {
 
     async function add(req, res) {
         const text = req.body.text;
-        if (!text) return res.send({status: "error", message: "invalid text"});
+        if (!text) return res.send({status: "error", message: "invalid text, specify text"});
 
-        await jokesService.addJoke(text);
+        const over18 = req.body.over_18;
+        if (!over18) return res.send({status: "error", message: "invalid text, specify over18"});
+
+        await jokesService.addJoke(text, over18);
 
         return res.send({status: "success"})
     }
