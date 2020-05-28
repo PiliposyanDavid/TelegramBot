@@ -1,13 +1,14 @@
 const assert = require('assert');
 
 class JokesService {
-    constructor(jokesDao, toReviewedJokesDao) {
+    constructor(chatsService, jokesDao, toReviewedJokesDao) {
+        this.chatsService = chatsService;
         this.jokesDao = jokesDao;
         this.toReviewedJokesDao = toReviewedJokesDao;
     }
 
-    getJokeFromNonReadedAndSorted(userId, over18) {
-        return this.jokesDao.findUnreadJokeForChat(userId, over18);
+    getJokeFromNonReadedForUserAndSorted(userId, over18) {
+        return this.jokesDao.findUnreadJokeForUser(userId, over18);
     }
 
     getJoke(id) {
@@ -15,14 +16,24 @@ class JokesService {
         return this.jokesDao.findJoke(id)
     }
 
-    addJoke(text, over18) {
+    async addJoke(text, over18) {
         assert(text, "text missed");
         assert(over18, " over18 missed");
 
-        return this.jokesDao.addJoke(text, over18);
+        const joke = await this.jokesDao.addJoke(text, over18);
+        let chats;
+        if (over18) chats = await this.chatsService.getAllOver18Chats();
+        else chats = await this.chatsService.getAllChats();
+
+        if (!chats || !chats.length) return;
+
+        for (const chat of chats) {
+            await this.chatsService.addJokeIdToUnreadForUser(chat.user_id, joke._id);
+        }
+        return joke;
     }
 
-    updateJokeReaded(id, userId) {
+    updateJokeReadedForUser(id, userId) {
         assert(id, "id missed");
         assert(userId, "userId missed");
 

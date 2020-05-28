@@ -21,6 +21,10 @@ class ChatsDao {
         return this.getCollection().find().lean().exec();
     }
 
+    findAllOver18Chats() {
+        return this.getCollection().find({over_18: true}).lean().exec();
+    }
+
     addMessage(chatId, message) {
         return this.getCollection().update({chat_id: chatId}, {$push: {messages: message}});
     }

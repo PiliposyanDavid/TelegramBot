@@ -3,7 +3,7 @@ class JokesDao {
         this.db = db;
     }
 
-    findUnreadJokeForChat(userId, over18 = false) {
+    findUnreadJokeForUser(userId, over18 = false) {
         return this.getCollection()
             .findOne({over_18: over18, readed_user_ids: {$nin: [userId]}})
             .sort({created: -1})

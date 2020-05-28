@@ -1,17 +1,17 @@
 const axios = require('axios');
 const BaseUrl = 'https://api.telegram.org/bot';
 const apiToken = '1027941776:AAEDWmjmstiGtYpObH3NjN0g9IePgVh-h4E';
-const CronJob = require('cron').CronJob;
+// const CronJob = require('cron').CronJob;
 const Promise = require('bluebird');
 
 const logger = require('log4js').getLogger('MainBotService.srv');
 
 class MainBotService {
     constructor(ngrokService, chatsService, jokesService) {
-        this.ngrokService = ngrokService;
+        // this.ngrokService = ngrokService;
         this.chatsService = chatsService;
         this.jokesService = jokesService;
-        this.job = null;
+        // this.job = null;
     }
 
     async runJob() {
@@ -31,27 +31,25 @@ class MainBotService {
                 logger.info(`Chat ids length ${chatIds.length}`);
             }
 
-            const joke = await this.jokesService.getJokeFromNonReadedAndSorted();
+            for (const chat of chats) {
+                const joke = await this.jokesService.getJokeFromNonReadedForUserAndSorted(chat.user_id, chat.over_18);
+                if (!joke || !joke.text) {
+                    logger.info(`For ${chat.user_id} user not found joke`);
+                    continue
+                }
 
-            if (!joke || !joke.text) {
-                logger.error("joke not found");
-                return;
-            } else {
-                logger.info("joke text ::", joke.text);
+                logger.info(`ChatId is ${chat.chat_id}, joke for this user - ${joke.text}`);
+
+                await axios.post(`${BaseUrl}${apiToken}/sendMessage`,
+                    {
+                        chat_id: chat.chat_id,
+                        text: joke.text
+                    });
+
+                await this.jokesService.updateJokeReadedForUser(joke.id, chat.user_id);
+                await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke.id);
             }
 
-            const promises = [];
-            chatIds.forEach((chatId) => {
-                logger.info("chat id ", chatId);
-                promises.push(axios.post(`${BaseUrl}${apiToken}/sendMessage`,
-                    {
-                        chat_id: chatId,
-                        text: joke.text
-                    }))
-            });
-
-            await Promise.all(promises);
-            await this.jokesService.updateJokeReaded(joke.id);
             logger.info("finish successfully !!!")
         } catch (err) {
             logger.error("Error in job !!!", err);
