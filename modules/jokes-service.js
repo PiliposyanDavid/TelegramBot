@@ -1,8 +1,9 @@
 const assert = require('assert');
 
 class JokesService {
-    constructor(jokesDao) {
+    constructor(jokesDao, toReviewedJokesDao) {
         this.jokesDao = jokesDao;
+        this.toReviewedJokesDao = toReviewedJokesDao;
     }
 
     getJokeFromNonReadedAndSorted(userId, over18) {
@@ -26,6 +27,14 @@ class JokesService {
         assert(userId, "userId missed");
 
         return this.jokesDao.updateJokeReadedForUser(id, userId);
+    }
+
+    addJokeToReviewedJokesList(text, userId, chatId) {
+        assert(text, "text missed");
+        assert(userId, "userId missed");
+        assert(chatId, "chatId missed");
+
+        return this.toReviewedJokesDao.addJoke(text, userId, chatId);
     }
 }
 

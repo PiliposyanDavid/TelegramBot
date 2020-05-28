@@ -45,7 +45,6 @@ class ChatsService {
         return this.chatsDao.addUnreadJokeId(userId, jokeId)
     }
 
-
     addMessage(chatId, message) {
         assert(chatId, "chatId missed");
         assert(message, "message missed");

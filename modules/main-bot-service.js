@@ -14,76 +14,74 @@ class MainBotService {
         this.job = null;
     }
 
-    async initJob() {
-        const that = this;
+    async runJob() {
         // 0 0 11-22 * * *
-        this.job = new CronJob('0 0 7-20 * * *', async function () {
-            logger.info("Start job");
-            try {
-                const chats = await that.chatsService.getAllChats();
-                const chatIds = (chats || [])
-                    .map((chat) => chat.chat_id)
-                    .filter(Boolean);
+        // this.job = new CronJob('0 0 7-20 * * *', async function () {
+        logger.info("Start job");
+        try {
+            const chats = await this.chatsService.getAllChats();
+            const chatIds = (chats || [])
+                .map((chat) => chat.chat_id)
+                .filter(Boolean);
 
-                if (!chatIds.length) {
-                    logger.error("chat ids not found");
-                    return;
-                } else {
-                    logger.info(`Chat ids length ${chatIds.length}`);
-                }
-
-                const joke = await that.jokesService.getJokeFromNonReadedAndSorted();
-
-                if (!joke || !joke.text) {
-                    logger.error("joke not found");
-                    return;
-                } else {
-                    logger.info("joke text ::", joke.text);
-                }
-
-
-                const promises = [];
-                chatIds.forEach((chatId) => {
-                    logger.info("chat id ", chatId);
-                    promises.push(axios.post(`${BaseUrl}${apiToken}/sendMessage`,
-                        {
-                            chat_id: chatId,
-                            text: joke.text
-                        }))
-                });
-
-                await Promise.all(promises);
-                await that.jokesService.updateJokeReaded(joke.id);
-                logger.info("finish successfully !!!")
-            } catch (err) {
-                logger.error("Error in job !!!", err);
+            if (!chatIds.length) {
+                logger.error("chat ids not found");
+                return;
+            } else {
+                logger.info(`Chat ids length ${chatIds.length}`);
             }
-        }, null, true).start();
-    }
 
-    async startJob() {
-        return true;
-    }
+            const joke = await this.jokesService.getJokeFromNonReadedAndSorted();
 
-    async stopJob() {
-        this.job.stop();
-    }
+            if (!joke || !joke.text) {
+                logger.error("joke not found");
+                return;
+            } else {
+                logger.info("joke text ::", joke.text);
+            }
 
-    async connectUrlToTelegram(url) {
-        if (!url) {
-            url = await this.ngrokService.init();
-            console.log("url getting from ngrok ", url);
-        } else {
-            console.log("Url set up from query", url);
+            const promises = [];
+            chatIds.forEach((chatId) => {
+                logger.info("chat id ", chatId);
+                promises.push(axios.post(`${BaseUrl}${apiToken}/sendMessage`,
+                    {
+                        chat_id: chatId,
+                        text: joke.text
+                    }))
+            });
+
+            await Promise.all(promises);
+            await this.jokesService.updateJokeReaded(joke.id);
+            logger.info("finish successfully !!!")
+        } catch (err) {
+            logger.error("Error in job !!!", err);
         }
-
-        const response = await axios.post(`${BaseUrl}${apiToken}/setwebhook`, {url: url})
-        if (response.statusText !== "OK") {
-            console.error("WTF", response.description);
-            throw new Error("Ngrok connection error :: " + response.description);
-        }
-
+        // }, null, true).start();
     }
+
+    // async startJob() {
+    //     return true;
+    // }
+
+    // async stopJob() {
+    //     this.job.stop();
+    // }
+
+    // async connectUrlToTelegram(url) {
+    //     if (!url) {
+    //         url = await this.ngrokService.init();
+    //         console.log("url getting from ngrok ", url);
+    //     } else {
+    //         console.log("Url set up from query", url);
+    //     }
+    //
+    //     const response = await axios.post(`${BaseUrl}${apiToken}/setwebhook`, {url: url})
+    //     if (response.statusText !== "OK") {
+    //         console.error("WTF", response.description);
+    //         throw new Error("Ngrok connection error :: " + response.description);
+    //     }
+    //
+    // }
 }
 
 module.exports = MainBotService;

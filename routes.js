@@ -6,11 +6,11 @@ function bootstrapRoutes(app, container) {
     app.get('/health-check', (req, res) => res.send({status: "success"}));
 
     app.post('/', botDetectionMiddleware, botMainCtrl.handleMessages);
-    app.get('/init', botDetectionMiddleware, botMainCtrl.init);
+    // app.get('/init', botDetectionMiddleware, botMainCtrl.init);
 
-    app.get('/job/init', botDetectionMiddleware, botMainCtrl.initJob);
     app.get('/job/start', botDetectionMiddleware, botMainCtrl.startJob);
-    app.get('/job/stop', botDetectionMiddleware, botMainCtrl.stopJob);
+    // app.get('/job/init', botDetectionMiddleware, botMainCtrl.initJob);
+    // app.get('/job/stop', botDetectionMiddleware, botMainCtrl.stopJob);
 
     app.post('/jokes', botDetectionMiddleware, jokesCtrl.add);
     app.get('/jokes/random', botDetectionMiddleware, jokesCtrl.getRandom);

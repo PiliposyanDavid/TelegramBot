@@ -4,26 +4,31 @@ const axios = require('axios');
 const url = 'https://api.telegram.org/bot';
 const apiToken = '1027941776:AAEDWmjmstiGtYpObH3NjN0g9IePgVh-h4E';
 
-module.exports = function BotMainCtrl(mainBotService, chatsService) {
-    this.handleMessages = handleMessages;
-    this.init = init;
+const ADMIN_USER_IDS = [938812149]
 
-    this.initJob = initJob;
+module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService) {
+    this.handleMessages = handleMessages;
     this.startJob = startJob;
-    this.stopJob = stopJob;
+
+    // this.init = init;
+    // this.initJob = initJob;
+    // this.stopJob = stopJob;
 
     async function handleMessages(req, res) {
 
         const chatId = req.body.message.chat.id;
-        const userId = req.body.message.from.id;
+        const userId = +req.body.message.from.id;
         const firstName = req.body.message.from.first_name;
         const lastName = req.body.message.from.last_name;
         const sentMessage = req.body.message.text;
 
         logger.info("info message", sentMessage);
 
-
         await chatsService.createIfNotExists(chatId, firstName, lastName, userId);
+
+        if (ADMIN_USER_IDS.includes(userId)) {
+            return handleAdminQueries();
+        }
 
         if (sentMessage === "/start") {
             return handleInitialCase();
@@ -33,13 +38,17 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
             return addJokeToReview()
         }
 
-        await chatsService.addMessage(chatId, sentMessage);
-        await axios.post(`${url}${apiToken}/sendMessage`,
-            {
-                chat_id: chatId,
-                text: 'Մենք կկապնվենք Ձեզ հետ, եթե կա դրա կարիքն'
-            });
-        return res.status(200).send({statusText: "OK"});
+        return unknownCase();
+
+        async function unknownCase() {
+            await chatsService.addMessage(chatId, sentMessage);
+            await axios.post(`${url}${apiToken}/sendMessage`,
+                {
+                    chat_id: chatId,
+                    text: 'Մենք կկապնվենք Ձեզ հետ, եթե կա դրա կարիքն'
+                });
+            return res.status(200).send({statusText: "OK"});
+        }
 
         async function handleInitialCase() {
             await axios.post(`${url}${apiToken}/sendMessage`,
@@ -55,6 +64,8 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
         }
 
         async function addJokeToReview() {
+
+            await jokesService.addJokeToReviewedJokesList(sentMessage.replace('/joke', ""), userId, chatId);
             await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,
@@ -63,40 +74,45 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
 
             return res.status(200).send({statusText: "OK"});
         }
-    }
 
-    async function init(req, res) {
-        try {
-            let url;
-            if (req.query.q) {
-                url = req.query.q;
+        async function handleAdminQueries() {
+            if (sentMessage.includes("/333")) {
+                await mainBotService.runJob();
+                await axios.post(`${url}${apiToken}/sendMessage`,
+                    {
+                        chat_id: chatId,
+                        text: `${firstName} Ձան բոլորի մոտ անդեկդոտներն թարմացվել է բարեհաջող`
+                    });
+
+                return res.status(200).send({statusText: "OK"});
             }
 
-            await mainBotService.connectUrlToTelegram(url);
-            return res.send({status: "success"});
-        } catch (e) {
-            return res.send({
-                status: "error",
-                response: {
-                    error_message: e
-                }
-            });
-        }
-    }
+            if (sentMessage.includes('/joke')) {
+                const over18 = sentMessage.includes('/18+');
+                await jokesService.addJoke(text, over18);
 
-    async function initJob(req, res) {
-        try {
-            await mainBotService.initJob();
-            return res.send({status: "success"});
-        } catch (err) {
-            logger.error("Error in initialization ", err);
-            return res.send({status: "error", response: err});
+                await axios.post(`${url}${apiToken}/sendMessage`,
+                    {
+                        chat_id: chatId,
+                        text: `${firstName} Ջան Ձեր անեկդոտն ստուգվելուց բարեհաջող ավելացված է`
+                    });
+
+                return res.status(200).send({statusText: "OK"});
+            }
+
+            await axios.post(`${url}${apiToken}/sendMessage`,
+                {
+                    chat_id: chatId,
+                    text: `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18+, Ալգորիթմի աշխատացնելու համար /333`
+                });
+
+            return res.status(200).send({statusText: "OK"});
         }
     }
 
     async function startJob(req, res) {
         try {
-            await mainBotService.startJob();
+            await mainBotService.runJob();
             return res.send({status: "success"});
         } catch (err) {
             logger.error("Error in starting job ", err);
@@ -104,15 +120,43 @@ module.exports = function BotMainCtrl(mainBotService, chatsService) {
         }
     }
 
-    async function stopJob(req, res) {
-        try {
-            await mainBotService.stopJob();
-            return res.send({status: "success"});
-        } catch (err) {
-            logger.error("Error in stop job ", err);
-            return res.send({status: "error", response: err});
-        }
-    }
+    //@Deprecated
+    // async function init(req, res) {
+    //     try {
+    //         let url;
+    //         if (req.query.q) {
+    //             url = req.query.q;
+    //         }
+    //
+    //         await mainBotService.connectUrlToTelegram(url);
+    //         return res.send({status: "success"});
+    //     } catch (e) {
+    //         return res.send({
+    //             status: "error",
+    //             response: {
+    //                 error_message: e
+    //             }
+    //         });
+    //     }
+    // }
 
+    // async function initJob(req, res) {
+    //     try {
+    //         await mainBotService.initJob();
+    //         return res.send({status: "success"});
+    //     } catch (err) {
+    //         logger.error("Error in initialization ", err);
+    //         return res.send({status: "error", response: err});
+    //     }
+    // }
 
+    // async function stopJob(req, res) {
+    //     try {
+    //         await mainBotService.stopJob();
+    //         return res.send({status: "success"});
+    //     } catch (err) {
+    //         logger.error("Error in stop job ", err);
+    //         return res.send({status: "error", response: err});
+    //     }
+    // }
 };
