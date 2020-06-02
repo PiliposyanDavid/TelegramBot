@@ -18,7 +18,7 @@ class JokesDao {
 
     updateJokeReadedForUser(jokeId, userId) {
         return this.getCollection()
-            .update({_id: jokeId}, {$addToSet: {readed_user_ids: userId}});
+            .findOneAndUpdate({_id: jokeId}, {$addToSet: {readed_user_ids: userId}});
     }
 
     findJoke(id) {

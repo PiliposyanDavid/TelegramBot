@@ -80,7 +80,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 await axios.post(`${url}${apiToken}/sendMessage`,
                     {
                         chat_id: chatId,
-                        text: `Ողջույն ${firstName} 👋, Եթե կցանկանաք ստանալ 18+ անեկդոտներ ապա սեխմեք /over18 ի վրա ))
+                        text: `Հարգելի ${firstName} 👋, Եթե կցանկանաք ստանալ 18+ անեկդոտներ ապա սեխմեք /over18 ի վրա ))
                     \nԵթե ցանկանում եք անեկդոտ գրել ապա, տեքստի առջևում գրել /joke որից հետո բուն տեքտն, ցանկալի է գրել հայատառ Օրինակ ՝ 
                     \n /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։
                     \nՀաճելի ժամանց Ձեզ։`
@@ -105,7 +105,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 await axios.post(`${url}${apiToken}/sendMessage`,
                     {
                         chat_id: chatId,
-                        text: `Ողջույն ${firstName} 👋, Ձեր անեկդոտն ստուգվելուց հետո կցուցադրվի բոլորին`
+                        text: `Հարգելի ${firstName} 👋, Ձեր անեկդոտն ստուգվելուց հետո կցուցադրվի բոլորին`
                     });
 
                 return res.status(200).send({statusText: "OK"});
@@ -113,7 +113,21 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
             async function handleAdminQueries() {
                 if (sentMessage.includes("/333")) {
-                    await mainBotService.runJob();
+
+                    try {
+                        await mainBotService.runJob();
+                    } catch (err) {
+                        logger.error("Error in job !!!", err);
+
+                        await axios.post(`${url}${apiToken}/sendMessage`,
+                            {
+                                chat_id: chatId,
+                                text: `${firstName} Առկա է խնդիր, Error - ${err}`
+                            });
+
+                        return res.status(200).send({statusText: "OK"});
+                    }
+
                     await axios.post(`${url}${apiToken}/sendMessage`,
                         {
                             chat_id: chatId,
