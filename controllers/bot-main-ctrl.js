@@ -45,7 +45,9 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 return handleInitialCase();
             }
 
-            if (sentMessage === "/over18") {
+            console.log(sentMessage == '/over18');
+
+            if (sentMessage == "/over18") {
                 return changeUserToOver18();
             }
 
