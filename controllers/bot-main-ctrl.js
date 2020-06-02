@@ -95,7 +95,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     await axios.post(`${url}${apiToken}/sendMessage`,
                         {
                             chat_id: chatId,
-                            text: `Հարգելի ${firstName},/joke-ի հետ միասին գրեք անեկդոտն`
+                            text: `Հարգելի ${firstName},/joke-ի հետ միասին գրեք անեկդոտն, Օրինակ\t /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։`
                         });
                     return res.status(200).send({statusText: "OK"});
 
