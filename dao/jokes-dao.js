@@ -4,8 +4,15 @@ class JokesDao {
     }
 
     findUnreadJokeForUser(userId, over18 = false) {
+        const query = {};
+        if (!over18) {
+            // if user not over 18 will be see only 18- jokes, if user over 18 will be see all jokes
+            query.over_18 = false;
+        }
+        query.readed_user_ids = {$nin: [userId]};
+
         return this.getCollection()
-            .findOne({over_18: over18, readed_user_ids: {$nin: [userId]}})
+            .findOne(query)
             .sort({created: -1})
             .lean()
             .exec()
