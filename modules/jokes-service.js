@@ -18,7 +18,6 @@ class JokesService {
 
     async addJoke(text, over18, ownerId) {
         assert(text, "text missed");
-        assert(over18, " over18 missed");
 
         const joke = await this.jokesDao.addJoke(text, over18, ownerId);
         let chats;
