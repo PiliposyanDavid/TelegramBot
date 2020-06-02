@@ -11,9 +11,9 @@ class JokesDao {
             .exec()
     }
 
-    addJoke(text, over18) {
+    addJoke(text, over18, ownerId) {
         return this.getCollection()
-            .create({over_18: over18, text: text, created: Date.now()});
+            .create({over_18: over18, text: text, owner_id: ownerId, created: Date.now()});
     }
 
     updateJokeReadedForUser(jokeId, userId) {

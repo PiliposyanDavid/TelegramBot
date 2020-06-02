@@ -16,11 +16,11 @@ class JokesService {
         return this.jokesDao.findJoke(id)
     }
 
-    async addJoke(text, over18) {
+    async addJoke(text, over18, ownerId) {
         assert(text, "text missed");
         assert(over18, " over18 missed");
 
-        const joke = await this.jokesDao.addJoke(text, over18);
+        const joke = await this.jokesDao.addJoke(text, over18, ownerId);
         let chats;
         if (over18) chats = await this.chatsService.getAllOver18Chats();
         else chats = await this.chatsService.getAllChats();
