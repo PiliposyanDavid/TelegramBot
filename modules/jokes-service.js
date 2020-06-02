@@ -16,6 +16,10 @@ class JokesService {
         return this.jokesDao.findJoke(id)
     }
 
+    getRandomJoke(){
+        return this.jokesDao.findRandomJoke(id)
+    }
+
     async addJoke(text, over18, ownerId) {
         assert(text, "text missed");
 

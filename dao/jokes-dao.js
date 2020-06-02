@@ -29,6 +29,14 @@ class JokesDao {
             .exec()
     }
 
+    findRandomJoke(id) {
+        return this.getCollection()
+            .findOne()
+            .sort({created: -1})
+            .lean()
+            .exec()
+    }
+
     getCollection() {
         return this.db.jokes
     }

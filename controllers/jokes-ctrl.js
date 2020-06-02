@@ -13,7 +13,7 @@ module.exports = function JokesCtrl(jokesService) {
     }
 
     async function getRandom(req, res) {
-        const joke = await jokesService.getJokeFromNonReadedAndSorted();
+        const joke = await jokesService.getRandomJoke();
 
         return res.send({status: "success", response: joke})
     }
