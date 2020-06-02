@@ -45,7 +45,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 return handleInitialCase();
             }
 
-            if (sentMessage === "/18+") {
+            if (sentMessage === "/over18") {
                 return changeUserToOver18();
             }
 
@@ -80,7 +80,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 await axios.post(`${url}${apiToken}/sendMessage`,
                     {
                         chat_id: chatId,
-                        text: `Ողջույն ${firstName} 👋, Եթե կցանկանաք ստանալ 18+ անեկդոտներ ապա սեխմեք /18+ ի վրա ))
+                        text: `Ողջույն ${firstName} 👋, Եթե կցանկանաք ստանալ 18+ անեկդոտներ ապա սեխմեք /over18 ի վրա ))
                     \nԵթե ցանկանում եք անեկդոտ գրել ապա, տեքստի առջևում գրել /joke որից հետո բուն տեքտն, ցանկալի է գրել հայատառ Օրինակ ՝ 
                     \n /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։
                     \nՀաճելի ժամանց Ձեզ։`
