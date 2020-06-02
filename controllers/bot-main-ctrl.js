@@ -15,108 +15,112 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
     // this.stopJob = stopJob;
 
     async function handleMessages(req, res) {
+        try {
+            const chatId = req.body.message.chat.id;
+            const userId = +req.body.message.from.id;
+            const firstName = req.body.message.from.first_name;
+            const username = req.body.message.from.username;
+            const lastName = req.body.message.from.last_name;
+            const sentMessage = req.body.message.text;
 
-        const chatId = req.body.message.chat.id;
-        const userId = +req.body.message.from.id;
-        const firstName = req.body.message.from.first_name;
-        const username = req.body.message.from.username;
-        const lastName = req.body.message.from.last_name;
-        const sentMessage = req.body.message.text;
+            logger.info("info message", sentMessage);
 
-        logger.info("info message", sentMessage);
-
-        await chatsService.createIfNotExists(chatId, firstName, lastName, userId, username);
-        await chatsService.addMessage(chatId, sentMessage);
-        if (chatId !== 938812149) {
-            await axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: 938812149,
-                    text: `${username} ից եկած նամակ, ${sentMessage}`
-                });
-        }
-
-
-        if (ADMIN_USER_IDS.includes(userId)) {
-            return handleAdminQueries();
-        }
-
-        if (sentMessage === "/start") {
-            return handleInitialCase();
-        }
-
-        if (sentMessage.includes('/joke')) {
-            return addJokeToReview()
-        }
-
-        return unknownCase();
-
-        async function unknownCase() {
-            await axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: 'Մենք կկապնվենք Ձեզ հետ, եթե կա դրա կարիքն'
-                });
-            return res.status(200).send({statusText: "OK"});
-        }
-
-        async function handleInitialCase() {
-            await axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: `Ողջույն ${firstName} 👋,
-                    \nԵթե ցանկանում եք անեկդոտ գրել ապա, տեքստի առջևում գրել /jok որից հետո բուն տեքտն, ցանկալի է գրել հայատառ Օրինակ ՝ 
-                    \n /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։
-                    \nՀաճելի ժամանց Ձեզ։`
-                });
-
-            return res.status(200).send({statusText: "OK"});
-        }
-
-        async function addJokeToReview() {
-
-            await jokesService.addJokeToReviewedJokesList(sentMessage.replace('/joke', ""), userId, chatId);
-            await axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: `Ողջույն ${firstName} 👋, Ձեր անեկդոտն ստուգվելուց հետո կցուցադրվի բոլորին`
-                });
-
-            return res.status(200).send({statusText: "OK"});
-        }
-
-        async function handleAdminQueries() {
-            if (sentMessage.includes("/333")) {
-                await mainBotService.runJob();
+            await chatsService.createIfNotExists(chatId, firstName, lastName, userId, username);
+            await chatsService.addMessage(chatId, sentMessage);
+            if (chatId !== 938812149) {
                 await axios.post(`${url}${apiToken}/sendMessage`,
                     {
-                        chat_id: chatId,
-                        text: `${firstName} Ձան բոլորի մոտ անդեկդոտներն թարմացվել է բարեհաջող`
+                        chat_id: 938812149,
+                        text: `${username} ից եկած նամակ, ${sentMessage}`
                     });
+            }
 
-                return res.status(200).send({statusText: "OK"});
+
+            if (ADMIN_USER_IDS.includes(userId)) {
+                return handleAdminQueries();
+            }
+
+            if (sentMessage === "/start") {
+                return handleInitialCase();
             }
 
             if (sentMessage.includes('/joke')) {
-                const over18 = sentMessage.includes('/18+');
-                let text = sentMessage.replace('/joke', "");
-                text = text.replace('/18+', "");
-                await jokesService.addJoke(text, over18, 938812149);
+                return addJokeToReview()
+            }
 
+            return unknownCase();
+
+            async function unknownCase() {
                 await axios.post(`${url}${apiToken}/sendMessage`,
                     {
                         chat_id: chatId,
-                        text: `${firstName} Ջան Ձեր անեկդոտն ստուգվելուց բարեհաջող ավելացված է`
+                        text: 'Մենք կկապնվենք Ձեզ հետ, եթե կա դրա կարիքն'
+                    });
+                return res.status(200).send({statusText: "OK"});
+            }
+
+            async function handleInitialCase() {
+                await axios.post(`${url}${apiToken}/sendMessage`,
+                    {
+                        chat_id: chatId,
+                        text: `Ողջույն ${firstName} 👋,
+                    \nԵթե ցանկանում եք անեկդոտ գրել ապա, տեքստի առջևում գրել /jok որից հետո բուն տեքտն, ցանկալի է գրել հայատառ Օրինակ ՝ 
+                    \n /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։
+                    \nՀաճելի ժամանց Ձեզ։`
                     });
 
                 return res.status(200).send({statusText: "OK"});
             }
 
-            await axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18+, Ալգորիթմի աշխատացնելու համար /333`
-                });
+            async function addJokeToReview() {
 
+                await jokesService.addJokeToReviewedJokesList(sentMessage.replace('/joke', ""), userId, chatId);
+                await axios.post(`${url}${apiToken}/sendMessage`,
+                    {
+                        chat_id: chatId,
+                        text: `Ողջույն ${firstName} 👋, Ձեր անեկդոտն ստուգվելուց հետո կցուցադրվի բոլորին`
+                    });
+
+                return res.status(200).send({statusText: "OK"});
+            }
+
+            async function handleAdminQueries() {
+                if (sentMessage.includes("/333")) {
+                    await mainBotService.runJob();
+                    await axios.post(`${url}${apiToken}/sendMessage`,
+                        {
+                            chat_id: chatId,
+                            text: `${firstName} Ձան բոլորի մոտ անդեկդոտներն թարմացվել է բարեհաջող`
+                        });
+
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                if (sentMessage.includes('/joke')) {
+                    const over18 = sentMessage.includes('/18+');
+                    let text = sentMessage.replace('/joke', "");
+                    text = text.replace('/18+', "");
+                    await jokesService.addJoke(text, over18, 938812149);
+
+                    await axios.post(`${url}${apiToken}/sendMessage`,
+                        {
+                            chat_id: chatId,
+                            text: `${firstName} Ջան Ձեր անեկդոտն ստուգվելուց բարեհաջող ավելացված է`
+                        });
+
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                await axios.post(`${url}${apiToken}/sendMessage`,
+                    {
+                        chat_id: chatId,
+                        text: `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18+, Ալգորիթմի աշխատացնելու համար /333`
+                    });
+
+                return res.status(200).send({statusText: "OK"});
+            }
+        } catch (e) {
+            logger.error("Error", e);
             return res.status(200).send({statusText: "OK"});
         }
     }
