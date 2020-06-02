@@ -99,7 +99,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             if (sentMessage.includes('/joke')) {
                 const over18 = sentMessage.includes('/18+');
                 let text = sentMessage.replace('/joke', "");
-                text = sentMessage.replace('/18+', "");
+                text = text.replace('/18+', "");
                 await jokesService.addJoke(text, over18, 938812149);
 
                 await axios.post(`${url}${apiToken}/sendMessage`,
