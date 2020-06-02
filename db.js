@@ -27,7 +27,7 @@ async function dbBootstrap(container) {
     const models = {
         jokes: require('./models/jokes'),
         chats: require('./models/chats'),
-        to_reviewed_jokes: require('/models/jokes')
+        to_reviewed_jokes: require('/models/to_reviewed_jokes')
     };
 
     console.log("connection stat", mongoose.connection.readyState);
