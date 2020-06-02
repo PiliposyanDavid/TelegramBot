@@ -95,6 +95,8 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                             chat_id: chatId,
                             text: `Հարգելի ${firstName},/joke-ի հետ միասին գրեք անեկդոտն`
                         });
+                    return res.status(200).send({statusText: "OK"});
+
                 }
 
                 await jokesService.addJokeToReviewedJokesList(text, userId, chatId);
@@ -123,6 +125,17 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     const over18 = sentMessage.includes('/18+');
                     let text = sentMessage.replace('/joke', "");
                     text = text.replace('/18+', "");
+
+                    if (!text) {
+                        await axios.post(`${url}${apiToken}/sendMessage`,
+                            {
+                                chat_id: chatId,
+                                text: `Հարգելի ${firstName},/joke-ի հետ միասին գրեք անեկդոտն`
+                            });
+                        return res.status(200).send({statusText: "OK"});
+
+                    }
+
                     await jokesService.addJoke(text, over18, 938812149);
 
                     await axios.post(`${url}${apiToken}/sendMessage`,
