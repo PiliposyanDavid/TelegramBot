@@ -19,11 +19,11 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             const chatId = req.body.message.chat.id;
             const userId = +req.body.message.from.id;
             const firstName = req.body.message.from.first_name;
-            const username = req.body.message.from.username;
             const lastName = req.body.message.from.last_name;
             const sentMessage = req.body.message.text;
+            let username = req.body.message.from.username;
 
-            if(!username) username = `${firstName} ${lastName}`;
+            if (!username) username = `${firstName} ${lastName}`;
 
             logger.info("info message", sentMessage);
 
@@ -52,7 +52,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             if (sentMessage.includes('/joke')) {
                 return addJokeToReview()
             }
-
 
 
             return unknownCase();
