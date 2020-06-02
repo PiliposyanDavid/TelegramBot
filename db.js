@@ -21,9 +21,9 @@ async function dbBootstrap(container) {
 
     mongoose.connect(dbConnectionString, connectionOptions);
 
-    require('./models/jokes');
-    require('./models/chats');
-    require('./models/to_reviewed_jokes');
+    // require('./models/jokes');
+    // require('./models/chats');
+    // require('./models/to_reviewed_jokes');
 
     const models = {
         jokes: require('./models/jokes'),
@@ -31,10 +31,6 @@ async function dbBootstrap(container) {
         to_reviewed_jokes: require('/models/to_reviewed_jokes')
     };
 
-    console.log("connection stat", mongoose.connection.readyState);
-    console.log("connection uri", dbConnectionString);
-
-    // container.register('db', asValue(db));
     container.register('db', asValue(models));
 }
 
