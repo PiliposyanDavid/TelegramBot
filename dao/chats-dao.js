@@ -27,15 +27,19 @@ class ChatsDao {
     }
 
     addMessage(chatId, message) {
-        return this.getCollection().update({chat_id: chatId}, {$push: {messages: message}});
+        return this.getCollection().findOneAndUpdate({chat_id: chatId}, {$push: {messages: message}});
+    }
+
+    updateUserOver18(isOver18) {
+        return this.getCollection().findOneAndUpdate({chat_id: chatId}, {set: {over_18: isOver18}});
     }
 
     addReadedJokeId(userId, jokeId) {
-        return this.getCollection().update({user_id: userId}, {$addToSet: {readed_jokes_ids: jokeId}});
+        return this.getCollection().findOneAndUpdate({user_id: userId}, {$addToSet: {readed_jokes_ids: jokeId}});
     }
 
     addUnreadJokeId(userId, jokeId) {
-        return this.getCollection().update({user_id: userId}, {$addToSet: {unread_jokes_ids: jokeId}});
+        return this.getCollection().findOneAndUpdate({user_id: userId}, {$addToSet: {unread_jokes_ids: jokeId}});
     }
 
     getCollection() {

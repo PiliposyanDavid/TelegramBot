@@ -12,7 +12,7 @@ const Chats = new Schema({
     unread_jokes_ids: {type: [], default: [], index: true},
     created: {type: Date, default: Date.now()},
     updated: {type: Date, default: Date.now()},
-    over_18: {type: Boolean, index: true}
+    over_18: {type: Boolean, index: true, default: false}
 });
 
 module.exports = mongoose.model('chats', Chats);

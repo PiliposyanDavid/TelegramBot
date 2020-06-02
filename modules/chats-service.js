@@ -7,7 +7,7 @@ class ChatsService {
         this.chatsDao = chatsDao;
     }
 
-    async createIfNotExists(chatId, firstName, lastName, userId,username) {
+    async createIfNotExists(chatId, firstName, lastName, userId, username) {
         assert(chatId, "chatId missed");
         assert(userId, "userId missed");
         assert(lastName, "lastName missed");
@@ -18,11 +18,16 @@ class ChatsService {
             return chat;
         }
 
-        return this.chatsDao.create(chatId, firstName, lastName, userId,username);
+        return this.chatsDao.create(chatId, firstName, lastName, userId, username);
     }
 
     getAllChats() {
         return this.chatsDao.findAllChats();
+    }
+
+    updateUserOver18(isOver18) {
+        isOver18 = !!isOver18;
+        return this.chatsDao.updateUserOver18(isOver18);
     }
 
     getAllOver18Chats() {

@@ -35,7 +35,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     });
             }
 
-
             if (ADMIN_USER_IDS.includes(userId)) {
                 return handleAdminQueries();
             }
@@ -44,11 +43,27 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 return handleInitialCase();
             }
 
+            if (sentMessage === "/18+") {
+                return changeUserToOver18();
+            }
+
             if (sentMessage.includes('/joke')) {
                 return addJokeToReview()
             }
 
             return unknownCase();
+
+
+            async function changeUserToOver18() {
+                await chatsService.updateUserOver18(true);
+                await axios.post(`${url}${apiToken}/sendMessage`,
+                    {
+                        chat_id: chatId,
+                        text: `Շնորհակալություն, Ձեր փոփոխությունն կատարված է`
+                    });
+
+                return res.status(200).send({statusText: "OK"});
+            }
 
             async function unknownCase() {
                 await axios.post(`${url}${apiToken}/sendMessage`,
@@ -63,7 +78,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 await axios.post(`${url}${apiToken}/sendMessage`,
                     {
                         chat_id: chatId,
-                        text: `Ողջույն ${firstName} 👋,
+                        text: `Ողջույն ${firstName} 👋, Եթե կցանկանաք ստանալ 18+ անեկդոտներ ապա սեխմեք /18+ ի վրա ))
                     \nԵթե ցանկանում եք անեկդոտ գրել ապա, տեքստի առջևում գրել /jok որից հետո բուն տեքտն, ցանկալի է գրել հայատառ Օրինակ ՝ 
                     \n /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։
                     \nՀաճելի ժամանց Ձեզ։`
