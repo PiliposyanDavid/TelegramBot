@@ -57,7 +57,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             return unknownCase();
 
             async function changeUserToOver18() {
-                await chatsService.updateUserOver18(true);
+                await chatsService.updateUserOver18(chatId, true);
                 await axios.post(`${url}${apiToken}/sendMessage`,
                     {
                         chat_id: chatId,

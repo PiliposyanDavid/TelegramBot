@@ -30,7 +30,7 @@ class ChatsDao {
         return this.getCollection().findOneAndUpdate({chat_id: chatId}, {$push: {messages: message}});
     }
 
-    updateUserOver18(isOver18) {
+    updateUserOver18(chatId,isOver18) {
         return this.getCollection().findOneAndUpdate({chat_id: chatId}, {set: {over_18: isOver18}});
     }
 

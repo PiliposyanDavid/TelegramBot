@@ -25,9 +25,11 @@ class ChatsService {
         return this.chatsDao.findAllChats();
     }
 
-    updateUserOver18(isOver18) {
+    updateUserOver18(chatId,isOver18) {
+        assert(chatId, "chatId missed");
+
         isOver18 = !!isOver18;
-        return this.chatsDao.updateUserOver18(isOver18);
+        return this.chatsDao.updateUserOver18(chatId,isOver18);
     }
 
     getAllOver18Chats() {
