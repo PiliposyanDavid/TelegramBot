@@ -73,8 +73,16 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             }
 
             async function addJokeToReview() {
+                const text = sentMessage.replace('/joke', "");
+                if (!text) {
+                    await axios.post(`${url}${apiToken}/sendMessage`,
+                        {
+                            chat_id: chatId,
+                            text: `Հարգելի ${firstName},/joke-ի հետ միասին գրեք անեկդոտն`
+                        });
+                }
 
-                await jokesService.addJokeToReviewedJokesList(sentMessage.replace('/joke', ""), userId, chatId);
+                await jokesService.addJokeToReviewedJokesList(text, userId, chatId);
                 await axios.post(`${url}${apiToken}/sendMessage`,
                     {
                         chat_id: chatId,
