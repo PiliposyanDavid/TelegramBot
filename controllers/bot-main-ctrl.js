@@ -4,7 +4,7 @@ const axios = require('axios');
 const url = 'https://api.telegram.org/bot';
 const apiToken = '1027941776:AAEDWmjmstiGtYpObH3NjN0g9IePgVh-h4E';
 
-const ADMIN_USER_IDS = [938812149]
+const ADMIN_USER_IDS = [938812149];
 
 module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService) {
     this.handleMessages = handleMessages;
@@ -25,6 +25,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
         logger.info("info message", sentMessage);
 
         await chatsService.createIfNotExists(chatId, firstName, lastName, userId);
+        await chatsService.addMessage(chatId, sentMessage);
 
         if (ADMIN_USER_IDS.includes(userId)) {
             return handleAdminQueries();
@@ -41,7 +42,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
         return unknownCase();
 
         async function unknownCase() {
-            await chatsService.addMessage(chatId, sentMessage);
             await axios.post(`${url}${apiToken}/sendMessage`,
                 {
                     chat_id: chatId,
