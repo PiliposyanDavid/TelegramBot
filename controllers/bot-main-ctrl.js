@@ -23,6 +23,8 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             const lastName = req.body.message.from.last_name;
             const sentMessage = req.body.message.text;
 
+            if(!username) username = `${firstName} ${lastName}`;
+
             logger.info("info message", sentMessage);
 
             await chatsService.createIfNotExists(chatId, firstName, lastName, userId, username);
@@ -51,8 +53,9 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 return addJokeToReview()
             }
 
-            return unknownCase();
 
+
+            return unknownCase();
 
             async function changeUserToOver18() {
                 await chatsService.updateUserOver18(true);
