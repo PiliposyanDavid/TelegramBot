@@ -6,9 +6,7 @@ module.exports = function JokesCtrl(jokesService) {
         const text = req.body.text;
         if (!text) return res.send({status: "error", message: "invalid text, specify text"});
 
-        const over18 = req.body.over_18;
-        if (!over18) return res.send({status: "error", message: "invalid text, specify over18"});
-
+        const over18 = !!req.body.over_18;
         await jokesService.addJoke(text, over18, 938812149);
 
         return res.send({status: "success"})
