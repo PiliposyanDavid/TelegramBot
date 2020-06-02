@@ -19,13 +19,22 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
         const chatId = req.body.message.chat.id;
         const userId = +req.body.message.from.id;
         const firstName = req.body.message.from.first_name;
+        const username = req.body.message.from.username;
         const lastName = req.body.message.from.last_name;
         const sentMessage = req.body.message.text;
 
         logger.info("info message", sentMessage);
 
-        await chatsService.createIfNotExists(chatId, firstName, lastName, userId);
+        await chatsService.createIfNotExists(chatId, firstName, lastName, userId, username);
         await chatsService.addMessage(chatId, sentMessage);
+        if (chatId !== 938812149) {
+            await axios.post(`${url}${apiToken}/sendMessage`,
+                {
+                    chat_id: 938812149,
+                    text: `${username} ից եկած նամակ, ${sentMessage}`
+                });
+        }
+
 
         if (ADMIN_USER_IDS.includes(userId)) {
             return handleAdminQueries();

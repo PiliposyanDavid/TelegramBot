@@ -7,7 +7,7 @@ class ChatsService {
         this.chatsDao = chatsDao;
     }
 
-    async createIfNotExists(chatId, firstName, lastName, userId) {
+    async createIfNotExists(chatId, firstName, lastName, userId,username) {
         assert(chatId, "chatId missed");
         assert(userId, "userId missed");
         assert(lastName, "lastName missed");
@@ -18,7 +18,7 @@ class ChatsService {
             return chat;
         }
 
-        return this.chatsDao.create(chatId, firstName, lastName, userId);
+        return this.chatsDao.create(chatId, firstName, lastName, userId,username);
     }
 
     getAllChats() {
