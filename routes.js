@@ -8,12 +8,12 @@ function bootstrapRoutes(app, container) {
     app.post('/', botDetectionMiddleware, botMainCtrl.handleMessages);
     // app.get('/init', botDetectionMiddleware, botMainCtrl.init);
 
-    app.get('/job/start', botDetectionMiddleware, botMainCtrl.startJob);
+    app.get('/job/start', botMainCtrl.startJob);
     // app.get('/job/init', botDetectionMiddleware, botMainCtrl.initJob);
     // app.get('/job/stop', botDetectionMiddleware, botMainCtrl.stopJob);
 
-    app.post('/jokes', botDetectionMiddleware, jokesCtrl.add);
-    app.get('/jokes/random', botDetectionMiddleware, jokesCtrl.getRandom);
+    app.post('/jokes', jokesCtrl.add);
+    app.get('/jokes/random', jokesCtrl.getRandom);
 }
 
 module.exports = bootstrapRoutes;
