@@ -23,6 +23,7 @@ async function dbBootstrap(container) {
 
     require('./models/jokes');
     require('./models/chats');
+    require('./models/to_reviewed_jokes');
 
     const models = {
         jokes: require('./models/jokes'),
