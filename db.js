@@ -28,7 +28,7 @@ async function dbBootstrap(container) {
     const models = {
         jokes: require('./models/jokes'),
         chats: require('./models/chats'),
-        to_reviewed_jokes: require('/models/to_reviewed_jokes')
+        to_reviewed_jokes: require('./models/to_reviewed_jokes')
     };
 
     container.register('db', asValue(models));
