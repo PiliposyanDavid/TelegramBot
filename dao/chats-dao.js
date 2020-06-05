@@ -18,6 +18,10 @@ class ChatsDao {
         return this.getCollection().findOne({user_id: userId});
     }
 
+    findChatByChatId(chatId) {
+        return this.getCollection().findOne({chat_id: chatId});
+    }
+
     findAllChats() {
         return this.getCollection().find().lean().exec();
     }
@@ -40,6 +44,10 @@ class ChatsDao {
 
     addUnreadJokeId(userId, jokeId) {
         return this.getCollection().findOneAndUpdate({user_id: userId}, {$addToSet: {unread_jokes_ids: jokeId}});
+    }
+
+    deleteByUserId(userId) {
+        return this.getCollection().remove({user_id: userId});
     }
 
     getCollection() {

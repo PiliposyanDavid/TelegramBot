@@ -8,6 +8,11 @@ class ToReviewedJokes {
             .create({user_id: userId, chat_id: chatId, text: text, created: Date.now()});
     }
 
+    findJokeById(id) {
+        return this.getCollection()
+            .findOne({_id:id});
+    }
+
 
     getCollection() {
         return this.db.to_reviewed_jokes

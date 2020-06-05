@@ -38,13 +38,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
             return await unknownCase();
 
-            async function changeUserToOver18() {
-                await chatsService.updateUserOver18(chatId, true);
-                await mainBotService.sendMessageToChat(chatId, settings.messages.change_over18);
-                await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_over18(username, userId));
-                return res.status(200).send({statusText: "OK"});
-            }
-
             async function unknownCase() {
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.unknown_user_message(username, sentMessage));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_case);
@@ -54,6 +47,13 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             async function handleInitialCase() {
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.join_to_bot(username, userId));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.initial_case(firstName));
+                return res.status(200).send({statusText: "OK"});
+            }
+
+            async function changeUserToOver18() {
+                await chatsService.updateUserOver18(chatId, true);
+                await mainBotService.sendMessageToChat(chatId, settings.messages.change_over18);
+                await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_over18(username, chatId));
                 return res.status(200).send({statusText: "OK"});
             }
 
@@ -69,6 +69,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_create_joke(username, userId, joke.text, joke._id));
                 return res.status(200).send({statusText: "OK"});
             }
+
 
             async function handleAdminQueries() {
                 if (sentMessage.includes("/333")) {
@@ -99,6 +100,71 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     await mainBotService.sendMessageToChat(chatId, settings.messages.admin_joke_to_review(firstName));
                     return res.status(200).send({statusText: "OK"});
                 }
+
+                if (sentMessage.includes('/remove_user_')) {
+                    let userId = sentMessage.replace('/remove_user_', "");
+                    try {
+                        userId = parseInt(userId);
+                        await chatsService.removeChatByUserId(userId);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.success_removing_user(userId));
+                    } catch (e) {
+                        logger.error("cant parse userId to number", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_removing_user(e, sentMessage));
+
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                if (sentMessage.includes('/remove_from_over18_')) {
+                    let chatIdFromText = sentMessage.replace('/remove_from_over18_', "");
+                    try {
+                        chatIdFromText = parseInt(chatIdFromText);
+
+                        await chatsService.updateUserOver18(chatIdFromText, false);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.success_removing_user(chatIdFromText));
+                    } catch (e) {
+                        logger.error("cant parse userId to number", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_removing_user(e, sentMessage));
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                if (sentMessage.includes('/approve_user_created_joke_')) {
+                    try {
+                        let jokeIdFromText = null;
+                        let over18 = null;
+
+                        if (sentMessage.includes("over18")) {
+                            jokeIdFromText = sentMessage.replace('/approve_user_created_joke_over18_', "");
+                            over18 = true;
+                        } else {
+                            jokeIdFromText = sentMessage.replace('/approve_user_created_joke_not_over18', "");
+                            over18 = false;
+                        }
+
+                        await jokesService.approveReviewedJoke(jokeIdFromText, over18);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.success_approve_joke());
+                    } catch (e) {
+                        logger.error("cant approve joke", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_removing_user(e, sentMessage));
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                if (sentMessage.includes('/remove_user_created_joke_')) {
+                    let jokeIdFromText = text.replace('/remove_user_created_joke_', "");
+                    try {
+                        jokeIdFromText = parseInt(jokeIdFromText);
+
+                        await chatsService.updateUserOver18(jokeIdFromText, false);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.success_reject_joke());
+                    } catch (e) {
+                        logger.error("cant parse userId to number", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_removing_user(e, sentMessage));
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
+
 
                 await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_admin_message(firstName));
                 return res.status(200).send({statusText: "OK"});

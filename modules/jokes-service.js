@@ -1,8 +1,10 @@
 const assert = require('assert');
 
 class JokesService {
-    constructor(chatsService, jokesDao, toReviewedJokesDao) {
+    constructor(chatsService, mainBotService, settings, jokesDao, toReviewedJokesDao) {
         this.chatsService = chatsService;
+        this.mainBotService = mainBotService;
+        this.settings = settings;
         this.jokesDao = jokesDao;
         this.toReviewedJokesDao = toReviewedJokesDao;
     }
@@ -16,7 +18,7 @@ class JokesService {
         return this.jokesDao.findJoke(id)
     }
 
-    getRandomJoke(){
+    getRandomJoke() {
         return this.jokesDao.findRandomJoke(id)
     }
 
@@ -49,6 +51,17 @@ class JokesService {
         assert(chatId, "chatId missed");
 
         return this.toReviewedJokesDao.addJoke(text, userId, chatId);
+    }
+
+    async approveReviewedJoke(id, over18) {
+        assert(id, "id missed");
+
+        const reviewedJoke = await this.toReviewedJokesDao.findJokeById(id);
+        await this.addJoke(reviewedJoke.text, over18, reviewedJoke.user_id);
+        const chat = await this.chatsService.getChatByChatId(reviewedJoke.chat_id);
+
+        await this.mainBotService.sendMessageToChat(reviewedJoke.chat_id, this.settings.approve_joke_message(chat.first_name, reviewedJoke.text))
+
     }
 }
 

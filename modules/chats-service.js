@@ -1,6 +1,5 @@
-const logger = require('log4js').getLogger('ChatsService.srv');
-
 const assert = require('assert');
+const logger = require('log4js').getLogger('ChatsService.srv');
 
 class ChatsService {
     constructor(chatsDao) {
@@ -42,6 +41,12 @@ class ChatsService {
         return this.chatsDao.findChatByUserId(userId)
     }
 
+    getChatByChatId(chatId) {
+        assert(chatId, "chatId missed");
+
+        return this.chatsDao.findChatByChatId(chatId)
+    }
+
     addJokeIdToReadedForUser(userId, jokeId) {
         assert(userId, "userId missed");
         assert(jokeId, "jokeId missed");
@@ -61,6 +66,11 @@ class ChatsService {
         assert(message, "message missed");
 
         return this.chatsDao.addMessage(chatId, message);
+    }
+
+    removeChatByUserId(userId){
+        assert(userId, "userId missed");
+        return this.chatsDao.deleteByUserId(userId);
     }
 }
 

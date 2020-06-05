@@ -4,7 +4,7 @@ const {Schema} = mongoose;
 const ToReviewedJokes = new Schema({
     created: {type: Date, default: Date.now()},
     text: {type: String},
-    creator: {type: Number},
+    user_id: {type: Number},
     chat_id: {type: Number},
 });
 
