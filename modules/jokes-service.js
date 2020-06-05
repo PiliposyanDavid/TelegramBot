@@ -59,6 +59,7 @@ class JokesService {
         const reviewedJoke = await this.toReviewedJokesDao.findJokeById(id);
         await this.addJoke(reviewedJoke.text, over18, reviewedJoke.user_id);
         const chat = await this.chatsService.getChatByChatId(reviewedJoke.chat_id);
+        await this.toReviewedJokesDao.removeById(id);
 
         await this.mainBotService.sendMessageToChat(reviewedJoke.chat_id, this.settings.messages.approve_joke_message(chat.first_name, reviewedJoke.text))
 
