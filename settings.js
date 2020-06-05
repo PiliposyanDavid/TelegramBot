@@ -12,7 +12,7 @@ module.exports = {
         },
 
         joke_without_text: function (firstName) {
-            return `Հարգելի ${firstName},/joke-ի հետ միասին գրեք անեկդոտն, Օրինակ\n /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։`
+            return `Հարգելի ${firstName}, /joke -ի հետ միասին գրեք անեկդոտն, Օրինակ \n/joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։`
         },
 
         joke_to_review: function (firstName) {
@@ -20,19 +20,19 @@ module.exports = {
         },
 
         join_to_bot: function (firstName, userId) {
-            return `${firstName} - ը միացել է մեր համակարգին, id ${userId} հեռացնելու համար /remove_user_${userId}`
+            return `${firstName} - ը միացել է մեր համակարգին, id ${userId} հեռացնելու համար \n/remove_user_${userId}`
         },
 
         request_to_over18: function (firstName, chatId) {
-            return `${firstName} - ը միացել է մեր համակարգի 18+ մասին, id ${chatId} հեռացնելու համար /remove_from_over18_${chatId}`
+            return `${firstName} - ը միացել է մեր համակարգի 18+ մասին, id ${chatId} հեռացնելու համար \n/remove_from_over18_${chatId}`
         },
 
         request_to_create_joke: function (firstName, userId, text, jokeId) {
-            return `${firstName}-ը ուղղարկել է անեկդոտ, userId ${userId}, անեկդոտ \n ${text} \n հաստատելու համար,\nեթե 18+ է ապա /approve_user_created_joke_over18_${jokeId}, հակառակ դեպքում  /approve_user_created_joke_low18_${jokeId},\nհեռացնելու համար /remove_user_created_joke_${jokeId}`
+            return `${firstName}-ը ուղղարկել է անեկդոտ, userId ${userId}, անեկդոտ \n${text} \n հաստատելու համար, եթե 18+ է ապա \n/approve_user_created_joke_over18_${jokeId}, հակառակ դեպքում \n/approve_user_created_joke_low18_${jokeId}, հեռացնելու համար \n/remove_user_created_joke_${jokeId}`
         },
 
         admin_joke_to_review: function (firstName) {
-            return `Հարգելի ${firstName}, Ձեր անեկդոտն կցուցադրվի բոլորին`
+            return `Հարգելի ${firstName}, Անեկդոտն բարեհաջող ավելացվել է`
         },
 
         joke_show_success: function (firstName) {
@@ -84,7 +84,7 @@ module.exports = {
         },
 
         spam_message: `Please leave this chat`,
-        change_over18: "Շնորհակալություն, Ձեր փոփոխությունն կատարված է",
-        unknown_case: "Անահասկանալի հրաման, Եթե հրամանն պատասխան ակնկալող է ապա կկապվնեք Ձեզ հետ."
+        change_over18: "Շնորհակալություն, Ձեր կարգավիճակի փոփոխությունն կատարված է",
+        unknown_case: "Անահասկանալի հրաման, Եթե հրամանն պատասխան ակնկալող է ապա կկապվնեք Ձեզ հետ"
     }
 };

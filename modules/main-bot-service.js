@@ -36,9 +36,10 @@ class MainBotService {
                 await this.sendMessageToChat(chat.chat_id, joke.text);
                 await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
                 await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
+                await this.chatsService.addMessage(chat.chat_id, joke.text);
             } catch (e) {
                 logger.error("Error in job process for user", chat.user_id, e);
-                await this.sendMessageToAllAdminsChat("Error in job process for user" + chat.user_id + e);
+                await this.sendMessageToAllAdminsChat("Error in job process for user " + chat.user_id + e);
             }
         }
 
