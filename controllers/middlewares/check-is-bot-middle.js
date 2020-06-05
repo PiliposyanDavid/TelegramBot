@@ -1,10 +1,6 @@
 const logger = require('log4js').getLogger('ChatsService.srv');
 
-const axios = require('axios');
-const url = 'https://api.telegram.org/bot';
-const apiToken = '1027941776:AAEDWmjmstiGtYpObH3NjN0g9IePgVh-h4E';
-
-return module.exports = function () {
+return module.exports = function (mainBotService, settings) {
     return async (req, res, next) => {
         const chatId = req.body.message.chat.id;
         const userId = req.body.message.from.id;
@@ -17,12 +13,7 @@ return module.exports = function () {
 
             logger.warn("Its a bot. chat id", chatId, "userId", userId, "firstName", firstName, "message", sentMessage);
 
-            await axios.post(`${url}${apiToken}/sendMessage`,
-                {
-                    chat_id: chatId,
-                    text: `Please leave this chat`
-                });
-
+            await mainBotService.sendMessageToChat(chatId, settings.messages.spam_message);
             return res.status(200).send({statusText: "OK"});
         }
         next();

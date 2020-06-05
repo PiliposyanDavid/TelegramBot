@@ -1,18 +1,8 @@
-const logger = require('log4js').getLogger('ChatsService.srv');
+const logger = require('log4js').getLogger('BotMainCtrl.srv');
 
-const axios = require('axios');
-const url = 'https://api.telegram.org/bot';
-const apiToken = '1027941776:AAEDWmjmstiGtYpObH3NjN0g9IePgVh-h4E';
-
-const ADMIN_USER_IDS = [938812149];
-
-module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService) {
+module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService, settings) {
     this.handleMessages = handleMessages;
     this.startJob = startJob;
-
-    // this.init = init;
-    // this.initJob = initJob;
-    // this.stopJob = stopJob;
 
     async function handleMessages(req, res) {
         try {
@@ -20,120 +10,78 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             const userId = +req.body.message.from.id;
             const firstName = req.body.message.from.first_name;
             const lastName = req.body.message.from.last_name;
-            const sentMessage = req.body.message.text;
+            let sentMessage = req.body.message.text;
             let username = req.body.message.from.username;
 
             if (!username) username = `${firstName} ${lastName}`;
-
+            sentMessage = sentMessage.trim();
             logger.info("info message", sentMessage);
 
             await chatsService.createIfNotExists(chatId, firstName, lastName, userId, username);
             await chatsService.addMessage(chatId, sentMessage);
-            if (chatId !== 938812149) {
-                await axios.post(`${url}${apiToken}/sendMessage`,
-                    {
-                        chat_id: 938812149,
-                        text: `${username} ից եկած նամակ, ${sentMessage}`
-                    });
+
+            if (!settings.ADMIN_USERS_CHATS_IDS.includes(chatId)) {
+                await mainBotService.sendMessageToAllAdminsChat(`${username} ից եկած նամակ, ${sentMessage}`);
             }
 
-            if (ADMIN_USER_IDS.includes(userId)) {
-                return handleAdminQueries();
+            if (settings.ADMIN_USERS_IDS.includes(userId)) {
+                return await handleAdminQueries();
             }
 
             if (sentMessage === "/start") {
-                return handleInitialCase();
+                return await handleInitialCase();
             }
 
             if (sentMessage === "/over18") {
-                return changeUserToOver18();
+                return await changeUserToOver18();
             }
 
             if (sentMessage.includes('/joke')) {
-                return addJokeToReview()
+                return await addJokeToReview()
             }
 
-
-            return unknownCase();
+            return await unknownCase();
 
             async function changeUserToOver18() {
                 await chatsService.updateUserOver18(chatId, true);
-                await axios.post(`${url}${apiToken}/sendMessage`,
-                    {
-                        chat_id: chatId,
-                        text: `Շնորհակալություն, Ձեր փոփոխությունն կատարված է`
-                    });
-
+                await mainBotService.sendMessageToChat(chatId, settings.messages.change_over18);
                 return res.status(200).send({statusText: "OK"});
             }
 
             async function unknownCase() {
-                await axios.post(`${url}${apiToken}/sendMessage`,
-                    {
-                        chat_id: chatId,
-                        text: 'Մենք կկապնվենք Ձեզ հետ, եթե կա դրա կարիքն'
-                    });
+                await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_case);
                 return res.status(200).send({statusText: "OK"});
             }
 
             async function handleInitialCase() {
-                await axios.post(`${url}${apiToken}/sendMessage`,
-                    {
-                        chat_id: chatId,
-                        text: `Հարգելի ${firstName} 👋, Եթե կցանկանաք ստանալ 18+ անեկդոտներ ապա սեխմեք /over18 ի վրա ))
-                    \nԵթե ցանկանում եք անեկդոտ գրել ապա, տեքստի առջևում գրել /joke որից հետո բուն տեքտն, ցանկալի է գրել հայատառ Օրինակ ՝ 
-                    \n /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։
-                    \nՀաճելի ժամանց Ձեզ։`
-                    });
-
+                await mainBotService.sendMessageToChat(chatId, settings.messages.initial_case(firstName));
                 return res.status(200).send({statusText: "OK"});
             }
 
             async function addJokeToReview() {
                 const text = sentMessage.replace('/joke', "");
                 if (!text) {
-                    await axios.post(`${url}${apiToken}/sendMessage`,
-                        {
-                            chat_id: chatId,
-                            text: `Հարգելի ${firstName},/joke-ի հետ միասին գրեք անեկդոտն, Օրինակ\t /joke Մինսկի խումբն առաջարկել է խաղաղապահ քերոբներ մտցնել Ազգային ժողով։`
-                        });
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.joke_without_text(firstName));
                     return res.status(200).send({statusText: "OK"});
-
                 }
 
                 await jokesService.addJokeToReviewedJokesList(text, userId, chatId);
-                await axios.post(`${url}${apiToken}/sendMessage`,
-                    {
-                        chat_id: chatId,
-                        text: `Հարգելի ${firstName} 👋, Ձեր անեկդոտն ստուգվելուց հետո կցուցադրվի բոլորին`
-                    });
+                await mainBotService.sendMessageToChat(chatId, settings.messages.joke_to_review(firstName));
 
                 return res.status(200).send({statusText: "OK"});
             }
 
             async function handleAdminQueries() {
                 if (sentMessage.includes("/333")) {
-
                     try {
                         await mainBotService.runJob();
                     } catch (err) {
                         logger.error("Error in job !!!", err);
-
-                        await axios.post(`${url}${apiToken}/sendMessage`,
-                            {
-                                chat_id: chatId,
-                                text: `${firstName} Առկա է խնդիր, Error - ${err}`
-                            });
-
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.joke_show_error(err));
                         return res.status(200).send({statusText: "OK"});
                     }
 
-                    await axios.post(`${url}${apiToken}/sendMessage`,
-                        {
-                            chat_id: chatId,
-                            text: `${firstName} Ձան բոլորի մոտ անդեկդոտներն թարմացվել է բարեհաջող`
-                        });
-
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.joke_show_success(firstName));
                     return res.status(200).send({statusText: "OK"});
                 }
 
@@ -143,32 +91,17 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     text = text.replace('/18+', "");
 
                     if (!text) {
-                        await axios.post(`${url}${apiToken}/sendMessage`,
-                            {
-                                chat_id: chatId,
-                                text: `Հարգելի ${firstName},/joke-ի հետ միասին գրեք անեկդոտն`
-                            });
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.joke_without_text(firstName));
                         return res.status(200).send({statusText: "OK"});
-
                     }
 
-                    await jokesService.addJoke(text, over18, 938812149);
+                    await jokesService.addJoke(text, over18, userId);
 
-                    await axios.post(`${url}${apiToken}/sendMessage`,
-                        {
-                            chat_id: chatId,
-                            text: `${firstName} Ջան Ձեր անեկդոտն ստուգվելուց բարեհաջող ավելացված է`
-                        });
-
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.admin_joke_to_review(firstName));
                     return res.status(200).send({statusText: "OK"});
                 }
 
-                await axios.post(`${url}${apiToken}/sendMessage`,
-                    {
-                        chat_id: chatId,
-                        text: `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18+, Ալգորիթմի աշխատացնելու համար /333`
-                    });
-
+                await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_admin_message(firstName));
                 return res.status(200).send({statusText: "OK"});
             }
         } catch (e) {
@@ -186,44 +119,4 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             return res.send({status: "error", response: err});
         }
     }
-
-    //@Deprecated
-    // async function init(req, res) {
-    //     try {
-    //         let url;
-    //         if (req.query.q) {
-    //             url = req.query.q;
-    //         }
-    //
-    //         await mainBotService.connectUrlToTelegram(url);
-    //         return res.send({status: "success"});
-    //     } catch (e) {
-    //         return res.send({
-    //             status: "error",
-    //             response: {
-    //                 error_message: e
-    //             }
-    //         });
-    //     }
-    // }
-
-    // async function initJob(req, res) {
-    //     try {
-    //         await mainBotService.initJob();
-    //         return res.send({status: "success"});
-    //     } catch (err) {
-    //         logger.error("Error in initialization ", err);
-    //         return res.send({status: "error", response: err});
-    //     }
-    // }
-
-    // async function stopJob(req, res) {
-    //     try {
-    //         await mainBotService.stopJob();
-    //         return res.send({status: "success"});
-    //     } catch (err) {
-    //         logger.error("Error in stop job ", err);
-    //         return res.send({status: "error", response: err});
-    //     }
-    // }
 };

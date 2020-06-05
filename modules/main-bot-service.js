@@ -1,22 +1,15 @@
 const axios = require('axios');
-const BaseUrl = 'https://api.telegram.org/bot';
-const apiToken = '1027941776:AAEDWmjmstiGtYpObH3NjN0g9IePgVh-h4E';
-// const CronJob = require('cron').CronJob;
-const Promise = require('bluebird');
-
 const logger = require('log4js').getLogger('MainBotService.srv');
 
 class MainBotService {
-    constructor(ngrokService, chatsService, jokesService) {
-        // this.ngrokService = ngrokService;
+    constructor(chatsService, jokesService, settings) {
         this.chatsService = chatsService;
         this.jokesService = jokesService;
-        // this.job = null;
+        this.settings = settings;
     }
 
     async runJob() {
         logger.info("Start job");
-        // try {
         const chats = await this.chatsService.getAllChats();
         const chatIds = (chats || [])
             .map((chat) => chat.chat_id)
@@ -29,58 +22,46 @@ class MainBotService {
             logger.info(`Chat ids length ${chatIds.length}`);
         }
 
+
         for (const chat of chats) {
-            const joke = await this.jokesService.getJokeFromNonReadedForUserAndSorted(chat.user_id, chat.over_18);
-            if (!joke || !joke.text) {
-                logger.info(`For ${chat.user_id} user not found joke`);
-                continue
+            try {
+                const joke = await this.jokesService.getJokeFromNonReadedForUserAndSorted(chat.user_id, chat.over_18);
+                if (!joke || !joke.text) {
+                    logger.info(`For ${chat.user_id} user not found joke`);
+                    continue
+                }
+
+                logger.info(`ChatId is ${chat.chat_id}, joke for this user - ${joke.text}`);
+
+                await this.sendMessageToChat(chat.chat_id, joke.text);
+                await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
+                await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
+            } catch (e) {
+                logger.error("Error in job process for user", chat.user_id, e);
+                await this.sendMessageToAllAdminsChat("Error in job process for user" + chat.user_id + e);
             }
-
-            logger.info(`ChatId is ${chat.chat_id}, joke for this user - ${joke.text}`);
-
-            await axios.post(`${BaseUrl}${apiToken}/sendMessage`,
-                {
-                    chat_id: chat.chat_id,
-                    text: joke.text
-                });
-
-            await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
-            await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
         }
 
         logger.info("finish successfully !!!")
-
-        // } catch (err) {
-        //     logger.error("Error in job !!!", err);
-        // }
-        // 0 0 11-22 * * *
-        // this.job = new CronJob('0 0 7-20 * * *', async function () {
-        // }, null, true).start();
     }
 
-    // async startJob() {
-    //     return true;
-    // }
+    async sendMessageToChat(chatId, message) {
+        await axios.post(`${this.settings.telegram_bot_base_url}${this.settings.api_token}/sendMessage`,
+            {
+                chat_id: chatId,
+                text: message
+            });
+    }
 
-    // async stopJob() {
-    //     this.job.stop();
-    // }
-
-    // async connectUrlToTelegram(url) {
-    //     if (!url) {
-    //         url = await this.ngrokService.init();
-    //         console.log("url getting from ngrok ", url);
-    //     } else {
-    //         console.log("Url set up from query", url);
-    //     }
-    //
-    //     const response = await axios.post(`${BaseUrl}${apiToken}/setwebhook`, {url: url})
-    //     if (response.statusText !== "OK") {
-    //         console.error("WTF", response.description);
-    //         throw new Error("Ngrok connection error :: " + response.description);
-    //     }
-    //
-    // }
+    async sendMessageToAllAdminsChat(message) {
+        for (const chatId of this.settings.ADMIN_USERS_CHATS_IDS) {
+            await axios.post(`${this.settings.telegram_bot_base_url}${this.settings.api_token}/sendMessage`,
+                {
+                    chat_id: chatId,
+                    text: message
+                });
+        }
+    }
 }
 
 module.exports = MainBotService;
