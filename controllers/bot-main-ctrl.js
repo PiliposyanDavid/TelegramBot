@@ -101,20 +101,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     return res.status(200).send({statusText: "OK"});
                 }
 
-                if (sentMessage.includes('/remove_user_')) {
-                    let userId = sentMessage.replace('/remove_user_', "");
-                    try {
-                        userId = parseInt(userId);
-                        await chatsService.removeChatByUserId(userId);
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.success_removing_user(userId));
-                    } catch (e) {
-                        logger.error("cant parse userId to number", e);
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_removing_user(e, sentMessage));
-
-                    }
-                    return res.status(200).send({statusText: "OK"});
-                }
-
                 if (sentMessage.includes('/remove_from_over18_')) {
                     let chatIdFromText = sentMessage.replace('/remove_from_over18_', "");
                     try {
@@ -163,6 +149,21 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     }
                     return res.status(200).send({statusText: "OK"});
                 }
+
+                if (sentMessage.includes('/remove_user_')) {
+                    let userId = sentMessage.replace('/remove_user_', "");
+                    try {
+                        userId = parseInt(userId);
+                        await chatsService.removeChatByUserId(userId);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.success_removing_user(userId));
+                    } catch (e) {
+                        logger.error("cant parse userId to number", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_removing_user(e, sentMessage));
+
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
+
 
                 await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_admin_message(firstName));
                 return res.status(200).send({statusText: "OK"});
