@@ -20,10 +20,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             await chatsService.createIfNotExists(chatId, firstName, lastName, userId, username);
             await chatsService.addMessage(chatId, sentMessage);
 
-            if (!settings.ADMIN_USERS_CHATS_IDS.includes(chatId)) {
-                await mainBotService.sendMessageToAllAdminsChat(`${username} ից եկած նամակ, ${sentMessage}`);
-            }
-
             if (settings.ADMIN_USERS_IDS.includes(userId)) {
                 return await handleAdminQueries();
             }
@@ -45,15 +41,18 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             async function changeUserToOver18() {
                 await chatsService.updateUserOver18(chatId, true);
                 await mainBotService.sendMessageToChat(chatId, settings.messages.change_over18);
+                await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_over18(username, userId));
                 return res.status(200).send({statusText: "OK"});
             }
 
             async function unknownCase() {
+                await mainBotService.sendMessageToAllAdminsChat(settings.messages.unknown_user_message(username, sentMessage));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_case);
                 return res.status(200).send({statusText: "OK"});
             }
 
             async function handleInitialCase() {
+                await mainBotService.sendMessageToAllAdminsChat(settings.messages.join_to_bot(username, userId));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.initial_case(firstName));
                 return res.status(200).send({statusText: "OK"});
             }
@@ -65,9 +64,9 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     return res.status(200).send({statusText: "OK"});
                 }
 
-                await jokesService.addJokeToReviewedJokesList(text, userId, chatId);
+                const joke = await jokesService.addJokeToReviewedJokesList(text, userId, chatId);
                 await mainBotService.sendMessageToChat(chatId, settings.messages.joke_to_review(firstName));
-
+                await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_create_joke(username, userId, joke.text, joke._id));
                 return res.status(200).send({statusText: "OK"});
             }
 
