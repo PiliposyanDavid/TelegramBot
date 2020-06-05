@@ -40,7 +40,7 @@ module.exports = {
         },
 
         unknown_admin_message: function (firstName) {
-            return `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18+, Ալգորիթմի աշխատացնելու համար /333`
+            return `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18, Ալգորիթմի աշխատացնելու համար /333`
         },
 
         unknown_user_message: function (firstName, message) {

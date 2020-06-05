@@ -86,9 +86,9 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 }
 
                 if (sentMessage.includes('/joke')) {
-                    const over18 = sentMessage.includes('/18+');
+                    const over18 = sentMessage.includes('/18');
                     let text = sentMessage.replace('/joke', "");
-                    text = text.replace('/18+', "");
+                    text = text.replace('/18', "");
 
                     if (!text) {
                         await mainBotService.sendMessageToChat(chatId, settings.messages.joke_without_text(firstName));
