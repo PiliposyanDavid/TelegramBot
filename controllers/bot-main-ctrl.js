@@ -138,7 +138,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                             jokeIdFromText = sentMessage.replace('/approve_user_created_joke_over18_', "");
                             over18 = true;
                         } else {
-                            jokeIdFromText = sentMessage.replace('/approve_user_created_joke_not_over18', "");
+                            jokeIdFromText = sentMessage.replace('/approve_user_created_joke_low18_', "");
                             over18 = false;
                         }
 
@@ -146,7 +146,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                         await mainBotService.sendMessageToChat(chatId, settings.messages.success_approve_joke());
                     } catch (e) {
                         logger.error("cant approve joke", e);
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_removing_user(e, sentMessage));
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_approving_joke(e, sentMessage));
                     }
                     return res.status(200).send({statusText: "OK"});
                 }
@@ -159,8 +159,8 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                         await chatsService.updateUserOver18(jokeIdFromText, false);
                         await mainBotService.sendMessageToChat(chatId, settings.messages.success_reject_joke());
                     } catch (e) {
-                        logger.error("cant parse userId to number", e);
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_removing_user(e, sentMessage));
+                        logger.error("cant rejecting joke", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_rejecting_joke(e, sentMessage));
                     }
                     return res.status(200).send({statusText: "OK"});
                 }

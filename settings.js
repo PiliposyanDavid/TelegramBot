@@ -28,7 +28,7 @@ module.exports = {
         },
 
         request_to_create_joke: function (firstName, userId, text, jokeId) {
-            return `${firstName}-ը ուղղարկել է անեկդոտ, userId ${userId}, անեկդոտ \n ${text} \n հաստատելու համար /approve_user_created_joke_${jokeId} հեռացնելու համար /remove_user_created_joke_${jokeId}`
+            return `${firstName}-ը ուղղարկել է անեկդոտ, userId ${userId}, անեկդոտ \n ${text} \n հաստատելու համար,\nեթե 18+ է ապա /approve_user_created_joke_over18_${jokeId}, հակառակ դեպքում  /approve_user_created_joke_low18_${jokeId},\nհեռացնելու համար /remove_user_created_joke_${jokeId}`
         },
 
         admin_joke_to_review: function (firstName) {
@@ -53,6 +53,14 @@ module.exports = {
 
         error_removing_user: function (err, message) {
             return `Առկա է խնդիր օգտատերին հեռացնելու հետ ${message}, Error - ${err}`
+        },
+
+        error_approving_joke: function (err, message) {
+            return `Առկա է խնդիր անեկդոտն հաստատելու հետ ${message}, Error - ${err}`
+        },
+
+        error_rejecting_joke: function (err, message) {
+            return `Առկա է խնդիր անեկդոտն հեռացնելու հետ ${message}, Error - ${err}`
         },
 
         approve_joke_message: function (username, text) {
