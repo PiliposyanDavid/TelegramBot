@@ -60,7 +60,7 @@ class JokesService {
         await this.addJoke(reviewedJoke.text, over18, reviewedJoke.user_id);
         const chat = await this.chatsService.getChatByChatId(reviewedJoke.chat_id);
 
-        await this.mainBotService.sendMessageToChat(reviewedJoke.chat_id, this.settings.approve_joke_message(chat.first_name, reviewedJoke.text))
+        await this.mainBotService.sendMessageToChat(reviewedJoke.chat_id, this.settings.messages.approve_joke_message(chat.first_name, reviewedJoke.text))
 
     }
 
@@ -72,7 +72,7 @@ class JokesService {
         await this.toReviewedJokesDao.removeById(id);
         const chat = await this.chatsService.getChatByChatId(reviewedJoke.chat_id);
 
-        await this.mainBotService.sendMessageToChat(reviewedJoke.chat_id, this.settings.reject_joke_message(chat.first_name, reviewedJoke.text))
+        await this.mainBotService.sendMessageToChat(reviewedJoke.chat_id, this.settings.messages.reject_joke_message(chat.first_name, reviewedJoke.text))
 
     }
 }
