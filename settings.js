@@ -67,6 +67,10 @@ module.exports = {
             return `Հարգելի ${username}, Շնորհակալություն անեկդոտի համար, Ձեր անեկդոտն հաստատվել է,\nԱնեկդոտ ${text}`
         },
 
+        reject_joke_message: function (username, text) {
+            return `Հարգելի ${username}, Շնորհակալություն անեկդոտի համար, սակայն այն չի հաստատվել,\nԱնեկդոտ ${text}`
+        },
+
         success_removing_user: function (userId) {
             return `Օգտատերն հեռացված է, ${userId}`
         },

@@ -152,11 +152,10 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 }
 
                 if (sentMessage.includes('/remove_user_created_joke_')) {
-                    let jokeIdFromText = text.replace('/remove_user_created_joke_', "");
                     try {
-                        jokeIdFromText = parseInt(jokeIdFromText);
+                        let jokeIdFromText = sentMessage.replace('/remove_user_created_joke_', "");
 
-                        await chatsService.updateUserOver18(jokeIdFromText, false);
+                        await jokesService.rejectJoke(jokeIdFromText);
                         await mainBotService.sendMessageToChat(chatId, settings.messages.success_reject_joke());
                     } catch (e) {
                         logger.error("cant rejecting joke", e);
@@ -164,7 +163,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     }
                     return res.status(200).send({statusText: "OK"});
                 }
-
 
                 await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_admin_message(firstName));
                 return res.status(200).send({statusText: "OK"});

@@ -63,6 +63,18 @@ class JokesService {
         await this.mainBotService.sendMessageToChat(reviewedJoke.chat_id, this.settings.approve_joke_message(chat.first_name, reviewedJoke.text))
 
     }
+
+    async rejectJoke(id) {
+        assert(id, "id missed");
+
+        const reviewedJoke = await this.toReviewedJokesDao.findJokeById(id);
+
+        await this.toReviewedJokesDao.removeById(id);
+        const chat = await this.chatsService.getChatByChatId(reviewedJoke.chat_id);
+
+        await this.mainBotService.sendMessageToChat(reviewedJoke.chat_id, this.settings.reject_joke_message(chat.first_name, reviewedJoke.text))
+
+    }
 }
 
 module.exports = JokesService;

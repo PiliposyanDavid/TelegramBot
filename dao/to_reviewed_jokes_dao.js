@@ -10,7 +10,12 @@ class ToReviewedJokes {
 
     findJokeById(id) {
         return this.getCollection()
-            .findOne({_id:id});
+            .findOne({_id: id});
+    }
+
+    removeById(id) {
+        return this.getCollection()
+            .remove({_id: id});
     }
 
 
