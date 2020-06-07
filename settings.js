@@ -43,8 +43,8 @@ module.exports = {
             return `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18, Ալգորիթմի աշխատացնելու համար /333`
         },
 
-        unknown_user_message: function (firstName, message) {
-            return `${firstName}-ից եկած անհասկանալի նամակ, նամակ ${message}`
+        unknown_user_message: function (firstName, message, chatId, userId) {
+            return `${firstName}-ից եկած անհասկանալի նամակ, նամակ ${message}, նամակագրության ստացման համար \n/get_messages_${chatId},\n/get_user_info_${userId}`
         },
 
         joke_show_error: function (err) {
@@ -53,6 +53,14 @@ module.exports = {
 
         error_removing_user: function (err, message) {
             return `Առկա է խնդիր օգտատերին հեռացնելու հետ ${message}, Error - ${err}`
+        },
+
+        error_getting_messages: function (err, message) {
+            return `Առկա է խնդիր օգտատերին հաղորդագրություններն հավաքագրելու հետ ${message}, Error - ${err}`
+        },
+
+        error_getting_info: function (err, message) {
+            return `Առկա է խնդիր օգտատերի ինֆո հավաքագրելու հետ ${message}, Error - ${err}`
         },
 
         error_approving_joke: function (err, message) {
@@ -75,12 +83,20 @@ module.exports = {
             return `Օգտատերն հեռացված է, ${userId}`
         },
 
+        user_info_sending: function (userId, chatId, info) {
+            return `/remove_user_${userId} \n/remove_from_over18_${chatId} \n/get_messages_${chatId}, \n${info}`
+        },
+
         success_approve_joke: function () {
             return `Անեկդոտն հաստատված է`
         },
 
         success_reject_joke: function () {
             return `Անեկդոտն հեռացված է`
+        },
+
+        generic_cases: function (userId, chatId) {
+            return `/remove_user_${userId} \n/remove_from_over18_${chatId} \n/get_user_info_${userId}`
         },
 
         spam_message: `Please leave this chat`,

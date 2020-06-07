@@ -39,7 +39,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             return await unknownCase();
 
             async function unknownCase() {
-                await mainBotService.sendMessageToAllAdminsChat(settings.messages.unknown_user_message(username, sentMessage));
+                await mainBotService.sendMessageToAllAdminsChat(settings.messages.unknown_user_message(username, sentMessage, chatId, userId));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_case);
                 return res.status(200).send({statusText: "OK"});
             }
@@ -159,6 +159,34 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
                         await mainBotService.sendMessageToChat(chatId, settings.messages.error_removing_user(e, sentMessage));
+
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                if (sentMessage.includes('/get_messages_')) {
+                    let chatId = sentMessage.replace('/get_messages_', "");
+                    try {
+                        chatId = parseInt(chatId);
+                        const messages = await chatsService.getMessagesByChatId(chatId);
+                        await mainBotService.sendMessageToChat(chatId, messages);
+                    } catch (e) {
+                        logger.error("cant parse userId to number", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_getting_messages(e, sentMessage));
+
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                if (sentMessage.includes('/get_user_info_')) {
+                    let userId = sentMessage.replace('/get_user_info_', "");
+                    try {
+                        userId = parseInt(userId);
+                        const info = await chatsService.getUserInfoByUserId(userId);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.user_info_sending(userId, chatId, info));
+                    } catch (e) {
+                        logger.error("cant parse userId to number", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_getting_info(e, sentMessage));
 
                     }
                     return res.status(200).send({statusText: "OK"});

@@ -68,9 +68,21 @@ class ChatsService {
         return this.chatsDao.addMessage(chatId, message);
     }
 
-    removeChatByUserId(userId){
+    removeChatByUserId(userId) {
         assert(userId, "userId missed");
         return this.chatsDao.deleteByUserId(userId);
+    }
+
+    async getMessagesByChatId(chatId) {
+        const chat = await this.chatsDao.findChatByChatId(chatId);
+        if (!chat) return;
+        return chat.messages;
+    }
+
+    async getUserInfoByUserId(userId) {
+        const chat = await this.chatsDao.findChatByChatId(userId);
+        if (!chat) return;
+        return chat;
     }
 }
 
