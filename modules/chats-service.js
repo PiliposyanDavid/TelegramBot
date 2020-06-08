@@ -91,16 +91,16 @@ class ChatsService {
         const chat = await this.chatsDao.findChatByChatId(userId);
         if (!chat) return;
 
-        return JSON.parse(JSON.stringify({
-            created: chat.created,
-            updated: chat.updated,
-            over18: chat.over_18,
-            lastName: chat.last_name,
-            firstName: chat.first_name,
-            username: chat.username,
-            chatId: chat.chat_id,
-            userId: chat.user_id
-        }));
+        return {
+            created: chat.created.toString(),
+            updated: chat.updated.toString(),
+            over18: chat.over_18.toString(),
+            lastName: chat.last_name.toString(),
+            firstName: chat.first_name.toString(),
+            username: chat.username.toString(),
+            chatId: chat.chat_id.toString(),
+            userId: chat.user_id.toString()
+        };
     }
 }
 
