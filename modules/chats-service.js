@@ -76,13 +76,32 @@ class ChatsService {
     async getMessagesByChatId(chatId) {
         const chat = await this.chatsDao.findChatByChatId(chatId);
         if (!chat) return;
-        return chat.messages;
+        let messages = "";
+        chat.messages.forEach(msg => {
+            if (msg.includes("From our - ")) {
+                msg = msg.replace("From our - ", "");
+            }
+            messages = messages + (msg + "\n");
+        });
+
+        return messages;
     }
 
     async getUserInfoByUserId(userId) {
         const chat = await this.chatsDao.findChatByChatId(userId);
         if (!chat) return;
-        return chat;
+
+        return {
+            messages: chat.messages,
+            created: chat.created,
+            updated: chat.updated,
+            over18: chat.over_18,
+            lastName: chat.last_name,
+            firstName: chat.first_name,
+            username: chat.username,
+            chatId: chat.chat_id,
+            userId: chat.user_id
+        };
     }
 }
 

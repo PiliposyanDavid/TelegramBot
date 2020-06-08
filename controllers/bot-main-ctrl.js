@@ -187,10 +187,10 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 }
 
                 if (sentMessage.includes('/get_messages_')) {
-                    let chatId = sentMessage.replace('/get_messages_', "");
+                    let messagesChatId = sentMessage.replace('/get_messages_', "");
                     try {
-                        chatId = parseInt(chatId);
-                        const messages = await chatsService.getMessagesByChatId(chatId);
+                        messagesChatId = parseInt(messagesChatId);
+                        const messages = await chatsService.getMessagesByChatId(messagesChatId);
                         await mainBotService.sendMessageToChat(chatId, messages);
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
