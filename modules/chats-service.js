@@ -79,8 +79,8 @@ class ChatsService {
         let messages = "";
         chat.messages.forEach(msg => {
             if (msg.includes("From our - ")) {
-                msg = msg.replace("From our - ", "");
-            }
+                msg = msg.replace("From our - ", "We - ");
+            } else msg = "Our - " + msg;
             messages = messages + (msg + "\n");
         });
 
