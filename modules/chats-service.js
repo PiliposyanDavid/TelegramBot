@@ -92,7 +92,6 @@ class ChatsService {
         if (!chat) return;
 
         return {
-            messages: chat.messages,
             created: chat.created,
             updated: chat.updated,
             over18: chat.over_18,
