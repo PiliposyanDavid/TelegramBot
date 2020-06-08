@@ -32,6 +32,10 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 return await changeUserToOver18();
             }
 
+            if (sentMessage === "/cancel_over18") {
+                return await changeUserToLow18();
+            }
+
             if (sentMessage.includes('/joke')) {
                 return await addJokeToReview()
             }
@@ -54,6 +58,13 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 await chatsService.updateUserOver18(chatId, true);
                 await mainBotService.sendMessageToChat(chatId, settings.messages.change_over18);
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_over18(username, chatId));
+                return res.status(200).send({statusText: "OK"});
+            }
+
+            async function changeUserToLow18() {
+                await chatsService.updateUserOver18(chatId, false);
+                await mainBotService.sendMessageToChat(chatId, settings.messages.change_low18);
+                await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_low18(username, chatId));
                 return res.status(200).send({statusText: "OK"});
             }
 

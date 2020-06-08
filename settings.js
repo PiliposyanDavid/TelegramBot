@@ -27,6 +27,10 @@ module.exports = {
             return `${firstName} - ը միացել է մեր համակարգի 18+ մասին, id ${chatId} հեռացնելու համար \n/remove_from_over18_${chatId}`
         },
 
+        request_to_low18: function (firstName, chatId) {
+            return `${firstName} - ը չեղարկել է մեր համակարգի 18+ մասը, id ${chatId}`
+        },
+
         request_to_create_joke: function (firstName, userId, text, jokeId) {
             return `${firstName}-ը ուղղարկել է անեկդոտ, userId ${userId}, անեկդոտ \n${text} \n հաստատելու համար, եթե 18+ է ապա \n/approve_user_created_joke_over18_${jokeId}, հակառակ դեպքում \n/approve_user_created_joke_low18_${jokeId}, հեռացնելու համար \n/remove_user_created_joke_${jokeId}`
         },
@@ -100,7 +104,8 @@ module.exports = {
         },
 
         spam_message: `Please leave this chat`,
-        change_over18: "Շնորհակալություն, Ձեր կարգավիճակի փոփոխությունն կատարված է",
+        change_over18: "Շնորհակալություն, Ձեր կարգավիճակի փոփոխությունն կատարված է, փոփոխությունն չեղարկելու համար ուղղարկեք /cancel_over18 հրամանն",
+        change_low18: "Շնորհակալություն, Ձեր կարգավիճակի փոփոխությունն կատարված է, փոփոխությունն չեղարկելու համար ուղղարկեք /over18 հրամանն",
         unknown_case: "Անահասկանալի հրաման, Եթե հրամանն պատասխան ակնկալող է ապա կկապվնեք Ձեզ հետ"
     }
 };
