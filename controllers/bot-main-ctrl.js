@@ -218,8 +218,9 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
                     try {
                         let offset = parseInt(sentMessage.replace("/get_jokes_", ""));
-                        const jokes = await jokesService.getJokes(offset, 20);
+                        let jokes = await jokesService.getJokes(offset, 20);
 
+                        if (!jokes.length) jokes = "Անեկդոտներն ավարտվել են";
                         await mainBotService.sendMessageToChat(chatId, settings.messages.jokes_send_with_offset(JSON.stringify(jokes), offset + 20));
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
@@ -233,7 +234,8 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
                     try {
                         let offset = parseInt(sentMessage.replace("/get_users_", ""));
-                        const chats = await chatsService.getChats(offset, 20);
+                        let chats = await chatsService.getChats(offset, 20);
+                        if (!chats.length) chats = "Օգտատերերն ավարտվել են";
 
                         await mainBotService.sendMessageToChat(chatId, settings.messages.chats_send_with_offset(JSON.stringify(chats), offset + 20));
                     } catch (e) {
