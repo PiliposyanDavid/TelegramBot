@@ -215,7 +215,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 }
 
                 if (sentMessage.includes('/get_jokes_')) {
-
                     try {
                         let offset = parseInt(sentMessage.replace("/get_jokes_", ""));
                         let jokes = await jokesService.getJokes(offset, 5);
@@ -231,7 +230,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 }
 
                 if (sentMessage.includes('/get_users_')) {
-
                     try {
                         let offset = parseInt(sentMessage.replace("/get_users_", ""));
                         let chats = await chatsService.getChats(offset, 20);
@@ -246,7 +244,13 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     return res.status(200).send({statusText: "OK"});
                 }
 
-                await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_admin_message(firstName));
+                const over18CountChats = await chatsService.getChatsCount(true);
+                const low18CountChats = await chatsService.getChatsCount(false);
+
+                const over18CountJokes = await jokesService.getJokesCount(true);
+                const low18CountJokes = await jokesService.getJokesCount(false);
+
+                await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_admin_message(firstName, over18CountChats, low18CountChats, over18CountJokes, low18CountJokes));
                 return res.status(200).send({statusText: "OK"});
             }
         } catch (e) {

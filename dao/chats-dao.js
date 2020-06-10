@@ -38,6 +38,10 @@ class ChatsDao {
         return this.getCollection().find({over_18: true}).lean().exec();
     }
 
+    findChatsCount(over18 = false) {
+        return this.getCollection().count({over_18: over18})
+    }
+
     addMessage(chatId, message) {
         return this.getCollection().findOneAndUpdate({chat_id: chatId}, {$push: {messages: message}});
     }

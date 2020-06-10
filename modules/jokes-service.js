@@ -18,6 +18,10 @@ class JokesService {
         return this.jokesDao.findJoke(id)
     }
 
+    getJokesCount(over18) {
+        return this.jokesDao.findJokesCount(over18)
+    }
+
     async getJokes(offset, limit) {
         const jokes = await this.jokesDao.findJokes(offset, limit);
         return (jokes || []);

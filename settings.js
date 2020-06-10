@@ -43,8 +43,14 @@ module.exports = {
             return `${firstName} Ձան բոլորի մոտ անդեկդոտներն թարմացվել է բարեհաջող`
         },
 
-        unknown_admin_message: function (firstName) {
-            return `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18, Ալգորիթմի աշխատացնելու համար /333, Անեկդոտներ տեսնելու համար /get_jokes_0, Օգտատերերին տեսնելու համար /get_users_0`
+        unknown_admin_message: function (firstName, over18CountChats, low18CountChats, over18CountJokes, low18CountJokes) {
+            return `${firstName} Ջան անհասկանալի նամակ. 
+            \nԱնեկդոտ ավելացնլեու համար /joke և /18
+            \nԱլգորիթմի աշխատացնելու համար /333 
+            \nԱնեկդոտներ տեսնելու համար /get_jokes_0 
+            \nՕգտատերերին տեսնելու համար /get_users_0
+            \nԱնեկդոտների Քանակն 18+ - ${over18CountJokes}, 18- ${low18CountJokes} 
+            \nՕգտատերերի Քանակն 18+ - ${over18CountChats}, 18- ${low18CountChats}`
         },
 
         unknown_user_message: function (firstName, message, chatId, userId) {

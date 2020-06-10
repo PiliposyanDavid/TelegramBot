@@ -46,6 +46,10 @@ class ChatsService {
         return this.chatsDao.findChatByUserId(userId)
     }
 
+    getChatsCount(over18) {
+        return this.chatsDao.findChatsCount(over18);
+    }
+
     getChatByChatId(chatId) {
         assert(chatId, "chatId missed");
 

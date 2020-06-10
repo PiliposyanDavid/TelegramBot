@@ -36,6 +36,12 @@ class JokesDao {
             .exec()
     }
 
+    findJokesCount(over18 = false) {
+        return this.getCollection()
+            .count({over_18: over18})
+
+    }
+
     findRandomJoke() {
         return this.getCollection()
             .findOne()
