@@ -214,6 +214,35 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     return res.status(200).send({statusText: "OK"});
                 }
 
+                if (sentMessage.includes('/get_jokes_')) {
+
+                    try {
+                        let offset = parseInt(sentMessage.replace("/get_jokes_", ""));
+                        const jokes = await jokesService.getJokes(offset, 20);
+
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.jokes_send_with_offset(jokes, offset + 20));
+                    } catch (e) {
+                        logger.error("cant parse userId to number", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_getting_jokes(e, sentMessage));
+
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                if (sentMessage.includes('/get_users_')) {
+
+                    try {
+                        let offset = parseInt(sentMessage.replace("/get_users_", ""));
+                        const chats = await chatsService.getChats(offset, 20);
+
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.chats_send_with_offset(chats, offset + 20));
+                    } catch (e) {
+                        logger.error("cant parse userId to number", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_getting_jokes(e, sentMessage));
+
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
 
                 await mainBotService.sendMessageToChat(chatId, settings.messages.unknown_admin_message(firstName));
                 return res.status(200).send({statusText: "OK"});

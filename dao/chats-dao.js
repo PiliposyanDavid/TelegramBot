@@ -26,6 +26,14 @@ class ChatsDao {
         return this.getCollection().find().lean().exec();
     }
 
+    findChats(offset = 0, limit = 60) {
+        return this.getCollection().find({}, {_id: 0, first_name: 1, last_name: 1, user_id: 1, over_18: 1})
+            .skip(offset)
+            .limit(limit)
+            .lean()
+            .exec();
+    }
+
     findAllOver18Chats() {
         return this.getCollection().find({over_18: true}).lean().exec();
     }

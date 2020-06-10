@@ -9,7 +9,7 @@ class JokesDao {
             // if user not over 18 will be see only 18- jokes, if user over 18 will be see all jokes
             query.over_18 = false;
         }
-        query.readed_user_ids = {$nin: [userId]};
+        query.readed_user_ids = {$ne: userId};
 
         return this.getCollection()
             .findOne(query)
@@ -36,10 +36,20 @@ class JokesDao {
             .exec()
     }
 
-    findRandomJoke(id) {
+    findRandomJoke() {
         return this.getCollection()
             .findOne()
             .sort({created: -1})
+            .lean()
+            .exec()
+    }
+
+    findJokes(offset = 0, limit = 60) {
+        return this.getCollection()
+            .find({}, {_id: 0, text: 1, over_18: 1, owner_id: 1})
+            .sort({created: -1})
+            .skip(offset)
+            .limit(limit)
             .lean()
             .exec()
     }

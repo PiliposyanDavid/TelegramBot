@@ -18,8 +18,13 @@ class JokesService {
         return this.jokesDao.findJoke(id)
     }
 
+    async getJokes(offset, limit) {
+        const jokes = await this.jokesDao.findJokes(offset, limit);
+        return (jokes || []);
+    }
+
     getRandomJoke() {
-        return this.jokesDao.findRandomJoke(id)
+        return this.jokesDao.findRandomJoke()
     }
 
     async addJoke(text, over18, ownerId) {

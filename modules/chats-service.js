@@ -24,6 +24,11 @@ class ChatsService {
         return this.chatsDao.findAllChats();
     }
 
+    async getChats(offset, limit) {
+        const chats = await this.chatsDao.findChats();
+        return (chats || []);
+    }
+
     updateUserOver18(chatId, isOver18) {
         assert(chatId, "chatId missed");
 

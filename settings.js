@@ -44,7 +44,7 @@ module.exports = {
         },
 
         unknown_admin_message: function (firstName) {
-            return `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18, Ալգորիթմի աշխատացնելու համար /333`
+            return `${firstName} Ջան անհասկանալի նամակ. Անեկդոտ ավելացնլեու համար /joke և /18, Ալգորիթմի աշխատացնելու համար /333, Անեկդոտներ տեսնելու համար /get_jokes_0, Օգտատերերին տեսնելու համար /get_users_0`
         },
 
         unknown_user_message: function (firstName, message, chatId, userId) {
@@ -65,6 +65,14 @@ module.exports = {
 
         error_getting_info: function (err, message) {
             return `Առկա է խնդիր օգտատերի ինֆո հավաքագրելու հետ ${message}, Error - ${err}`
+        },
+
+        error_getting_jokes: function (err, message) {
+            return `Առկա է խնդիր անեկդոտների հավաքագրելու հետ ${message}, Error - ${err}`
+        },
+
+        error_getting_jokes: function (err, message) {
+            return `Առկա է խնդիր օգտատերերին հավաքագրելու հետ ${message}, Error - ${err}`
         },
 
         error_approving_joke: function (err, message) {
@@ -97,6 +105,14 @@ module.exports = {
 
         user_info_sending: function (userId, chatId, info) {
             return `/remove_user_${userId} \n/remove_from_over18_${chatId} \n/get_messages_${chatId}, \n${info}`
+        },
+
+        jokes_send_with_offset: function (jokes, offset) {
+            return `${jokes}\nNext page /get_jokes_${offset}`
+        },
+
+        chats_send_with_offset: function (chats, offset) {
+            return `${chats}\nNext page /get_users_${offset}`
         },
 
         success_approve_joke: function () {
