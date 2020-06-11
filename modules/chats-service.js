@@ -25,7 +25,7 @@ class ChatsService {
     }
 
     async getChats(offset, limit) {
-        const chats = await this.chatsDao.findChats();
+        const chats = await this.chatsDao.findChats(offset, limit);
         return (chats || []);
     }
 
