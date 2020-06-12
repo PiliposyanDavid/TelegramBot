@@ -98,7 +98,7 @@ module.exports = {
         },
 
         success_removing_user: function (userId) {
-            return `Օգտատերն հեռացված է, ${userId}`
+            return `Օգտատերն հեռացված է 18+ ից, ${userId}`
         },
 
         success_stop_for_user: function (firstName, userId) {
