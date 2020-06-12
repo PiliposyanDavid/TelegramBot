@@ -49,6 +49,15 @@ class JokesDao {
             .exec()
     }
 
+    updateOver18(id, isOver18) {
+        return this.getCollection().findOneAndUpdate({_id: id}, {$set: {over_18: isOver18}});
+    }
+
+    remove(id) {
+        return this.getCollection()
+            .remove({_id: id})
+    }
+
     findJokes(offset = 0, limit = 60) {
         return this.getCollection()
             .find({}, {_id: 0, text: 1, over_18: 1, owner_id: 1})
@@ -62,7 +71,6 @@ class JokesDao {
     getCollection() {
         return this.db.jokes
     }
-
 }
 
 module.exports = JokesDao;

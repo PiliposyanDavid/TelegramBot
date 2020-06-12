@@ -54,7 +54,7 @@ module.exports = {
         },
 
         unknown_user_message: function (firstName, message, chatId, userId) {
-            return `${firstName}-ից եկած անհասկանալի նամակ, նամակ ${message}, նամակագրության ստացման համար \n/get_messages_${chatId},\n/get_user_info_${userId}\n${chatId}`
+            return `${firstName}-ից եկած անհասկանալի նամակ, \n${message}, \nՆամակագրության ստացման համար \n/get_messages_${chatId},\n/get_user_info_${userId}\n${chatId}`
         },
 
         joke_show_error: function (err) {

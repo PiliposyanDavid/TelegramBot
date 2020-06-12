@@ -62,6 +62,17 @@ class JokesService {
         return this.toReviewedJokesDao.addJoke(text, userId, chatId);
     }
 
+    removeJokeById(id) {
+        assert(id, "id missed");
+        return this.jokesDao.remove(id);
+    }
+
+    changeJokeOver18(id, isOver18 = false) {
+        assert(id, "id missed");
+
+        return this.jokesDao.updateOver18(id, isOver18);
+    }
+
     async approveReviewedJoke(id, over18) {
         assert(id, "id missed");
 
