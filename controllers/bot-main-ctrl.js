@@ -205,7 +205,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     try {
                         userId = parseInt(userId);
                         const info = await chatsService.getUserInfoByUserId(userId);
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.user_info_sending(userId, info.chatId, info.toString()));
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.user_info_sending(userId, info.chatId, info));
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
                         await mainBotService.sendMessageToChat(chatId, settings.messages.error_getting_info(e, sentMessage));

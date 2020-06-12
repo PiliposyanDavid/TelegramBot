@@ -110,7 +110,7 @@ module.exports = {
         },
 
         user_info_sending: function (userId, chatId, info) {
-            return `/remove_user_${userId} \n/remove_from_over18_${chatId} \n/get_messages_${chatId},\n` + info
+            return `/remove_user_${userId} \n/remove_from_over18_${chatId} \n/get_messages_${chatId},\nName - ${info.firstName} \nLast name - ${info.lastName} \nusername - ${info.username} \nover18 - ${info.over18} \nchatId - ${info.chatId} \nuserId - ${info.userId} `
         },
 
         jokes_send_with_offset: function (jokes, offset) {
