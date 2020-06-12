@@ -9,7 +9,7 @@ module.exports = function JokesCtrl(jokesService) {
         const over18 = !!req.body.over_18;
         const ownerId = req.body.owner_id || 938812149;
 
-        await jokesService.addJoke(text, over18, 938812149);
+        await jokesService.addJoke(text, over18, ownerId);
 
         return res.send({status: "success"})
     }
