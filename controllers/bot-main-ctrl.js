@@ -252,6 +252,13 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
                         userChatId = parseInt(userChatId);
 
+                        if (!text || !text.length) {
+                            await mainBotService.sendMessageToChat(chatId, settings.messages.send_message_to_user_for_admin("Նամակում տեքստն բացակայում է, " + text));
+                            return res.status(200).send({statusText: "OK"});
+                        }
+
+
+                        await chatsService.addMessage(userChatId, "From our - " + text);
                         await mainBotService.sendMessageToChat(userChatId, settings.messages.send_message_to_user(text));
                         await mainBotService.sendMessageToChat(chatId, settings.messages.send_message_to_user_for_admin(text));
                     } catch (e) {
