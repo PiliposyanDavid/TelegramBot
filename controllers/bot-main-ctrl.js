@@ -203,8 +203,13 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                         let offset = parseInt(sentMessage.replace("/get_jokes_", ""));
                         let jokes = await jokesService.getJokes(offset, 5);
 
-                        if (!jokes.length) jokes = "Անեկդոտներն ավարտվել են";
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.jokes_send_with_offset(JSON.stringify(jokes), offset + 5));
+                        if (!jokes.length) {
+                            await mainBotService.sendMessageToChat(chatId, settings.messages.finish_jokes);
+                        }
+
+                        for (const joke of jokes) {
+                            await mainBotService.sendMessageToChat(chatId, settings.messages.jokes_send_with_offset(JSON.stringify(jokes), offset + 5));
+                        }
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
                         await mainBotService.sendMessageToChat(chatId, settings.messages.error_getting_jokes(e, sentMessage));
