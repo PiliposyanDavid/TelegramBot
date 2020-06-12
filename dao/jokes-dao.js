@@ -13,7 +13,7 @@ class JokesDao {
 
         return this.getCollection()
             .findOne(query)
-            .sort({created: -1})
+            .sort({created: 1})
             .lean()
             .exec()
     }
@@ -31,7 +31,6 @@ class JokesDao {
     findJoke(id) {
         return this.getCollection()
             .findOne({_id: id})
-            .sort({created: -1})
             .lean()
             .exec()
     }
@@ -45,7 +44,7 @@ class JokesDao {
     findRandomJoke() {
         return this.getCollection()
             .findOne()
-            .sort({created: -1})
+            .sort({created: 1})
             .lean()
             .exec()
     }
@@ -53,7 +52,7 @@ class JokesDao {
     findJokes(offset = 0, limit = 60) {
         return this.getCollection()
             .find({}, {_id: 0, text: 1, over_18: 1, owner_id: 1})
-            .sort({created: -1})
+            .sort({created: 1})
             .skip(offset)
             .limit(limit)
             .lean()
