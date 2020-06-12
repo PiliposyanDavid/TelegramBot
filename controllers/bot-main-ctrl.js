@@ -107,22 +107,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     return res.status(200).send({statusText: "OK"});
                 }
 
-                if (sentMessage.includes('/joke')) {
-                    const over18 = sentMessage.includes('/18');
-                    let text = sentMessage.replace('/joke', "");
-                    text = text.replace('/18', "");
-
-                    if (!text) {
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.joke_without_text(firstName));
-                        return res.status(200).send({statusText: "OK"});
-                    }
-
-                    await jokesService.addJoke(text, over18, userId);
-
-                    await mainBotService.sendMessageToChat(chatId, settings.messages.admin_joke_to_review(firstName));
-                    return res.status(200).send({statusText: "OK"});
-                }
-
                 if (sentMessage.includes('/remove_from_over18_')) {
                     let chatIdFromText = sentMessage.replace('/remove_from_over18_', "");
                     try {
@@ -229,6 +213,35 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     return res.status(200).send({statusText: "OK"});
                 }
 
+                if (sentMessage.includes('/jokes_over18')) {
+
+                    let id = null;
+                    let to = null;
+
+                    if (sentMessage.includes("/jokes_over18_1_")) {
+                        id = sentMessage.replace("/jokes_over18_1_", "");
+                        to = true;
+                    } else {
+                        id = sentMessage.replace("/jokes_over18_0_", "");
+                        to = false;
+                    }
+
+                    if (!id) {
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.reject_update_null_id());
+                    }
+
+                    let joke = await jokesService.changeJokeOver18(id, to);
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.success_update_joke_over(joke.text, joke.over_18));
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                if (sentMessage.includes('/jokes_remove_')) {
+                    let id = sentMessage.replace("/jokes_remove_", "");
+                    await jokesService.removeJokeById(id);
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.jokes_success_remove());
+                    return res.status(200).send({statusText: "OK"});
+                }
+
                 if (sentMessage.includes('/get_users_')) {
                     try {
                         let offset = parseInt(sentMessage.replace("/get_users_", ""));
@@ -267,6 +280,23 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     }
                     return res.status(200).send({statusText: "OK"});
                 }
+
+                if (sentMessage.includes('/joke')) {
+                    const over18 = sentMessage.includes('/18');
+                    let text = sentMessage.replace('/joke', "");
+                    text = text.replace('/18', "");
+
+                    if (!text) {
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.joke_without_text(firstName));
+                        return res.status(200).send({statusText: "OK"});
+                    }
+
+                    await jokesService.addJoke(text, over18, userId);
+
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.admin_joke_to_review(firstName));
+                    return res.status(200).send({statusText: "OK"});
+                }
+
 
                 const over18CountChats = await chatsService.getChatsCount(true);
                 const low18CountChats = await chatsService.getChatsCount(false);

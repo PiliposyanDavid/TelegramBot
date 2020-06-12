@@ -97,6 +97,14 @@ module.exports = {
             return `Հարգելի ${username}, Շնորհակալություն անեկդոտի համար, սակայն այն չի հաստատվել,\nԱնեկդոտ ${text}`
         },
 
+        reject_update_null_id: function () {
+            return `Id-ին չի հայտնաբերվել հրամանի միջից`
+        },
+
+        success_update_joke_over: function (text, over18) {
+            return `Անեկդոտն փոփոխվել է, over18 - ${over18},\ntext - ${text}`
+        },
+
         success_removing_user: function (userId) {
             return `Օգտատերն հեռացված է 18+ ից, ${userId}`
         },
@@ -113,8 +121,12 @@ module.exports = {
             return `/remove_user_${userId} \n/remove_from_over18_${chatId} \n/get_messages_${chatId},\nName - ${info.firstName} \nLast name - ${info.lastName} \nusername - ${info.username} \nover18 - ${info.over18} \nchatId - ${info.chatId} \nuserId - ${info.userId} `
         },
 
-        jokes_send_with_offset: function (jokes, offset) {
-            return `${jokes}\nNext page /get_jokes_${offset}`
+        jokes_send_with_offset: function (joke, offset) {
+            return `text - ${joke.text}\nover18 - ${joke.over_18}\nNext page /get_jokes_${offset}\nRemove joke - /jokes_remove_${joke._id},\nUpdate over18 - /jokes_over18_${joke.over_18 ? 0 : 2}_${joke._id}`
+        },
+
+        jokes_success_remove: function (text) {
+            return `Անեկդոտն ջնջվեց`
         },
 
         chats_send_with_offset: function (chats, offset) {

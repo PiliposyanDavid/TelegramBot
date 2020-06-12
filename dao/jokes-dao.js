@@ -60,7 +60,7 @@ class JokesDao {
 
     findJokes(offset = 0, limit = 60) {
         return this.getCollection()
-            .find({}, {_id: 0, text: 1, over_18: 1, owner_id: 1})
+            .find({}, {_id: 1, text: 1, over_18: 1, owner_id: 1})
             .sort({created: 1})
             .skip(offset)
             .limit(limit)
