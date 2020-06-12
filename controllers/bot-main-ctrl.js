@@ -238,7 +238,25 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                         await mainBotService.sendMessageToChat(chatId, settings.messages.chats_send_with_offset(JSON.stringify(chats), offset + 20));
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.error_getting_jokes(e, sentMessage));
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.parse_error(e, sentMessage));
+
+                    }
+                    return res.status(200).send({statusText: "OK"});
+                }
+
+                if (sentMessage.includes('/message_to_user_')) {
+                    try {
+                        let userChatId = sentMessage.replace("/message_to_user_", "").split("_")[0];
+                        let index = sentMessage.indexOf(userChatId);
+                        const text = sentMessage.slice(index + userChatId.length + 2, -1);
+
+                        userChatId = parseInt(userChatId);
+
+                        await mainBotService.sendMessageToChat(userChatId, settings.messages.send_message_to_user(text));
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.send_message_to_user_for_admin(text));
+                    } catch (e) {
+                        logger.error("Cant parse userId to number", e);
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.parse_error(e, sentMessage));
 
                     }
                     return res.status(200).send({statusText: "OK"});

@@ -54,7 +54,7 @@ module.exports = {
         },
 
         unknown_user_message: function (firstName, message, chatId, userId) {
-            return `${firstName}-ից եկած անհասկանալի նամակ, նամակ ${message}, նամակագրության ստացման համար \n/get_messages_${chatId},\n/get_user_info_${userId}`
+            return `${firstName}-ից եկած անհասկանալի նամակ, նամակ ${message}, նամակագրության ստացման համար \n/get_messages_${chatId},\n/get_user_info_${userId}\n${chatId}`
         },
 
         joke_show_error: function (err) {
@@ -77,7 +77,7 @@ module.exports = {
             return `Առկա է խնդիր անեկդոտների հավաքագրելու հետ ${message}, Error - ${err}`
         },
 
-        error_getting_jokes: function (err, message) {
+        parse_error: function (err, message) {
             return `Առկա է խնդիր օգտատերերին հավաքագրելու հետ ${message}, Error - ${err}`
         },
 
@@ -119,6 +119,14 @@ module.exports = {
 
         chats_send_with_offset: function (chats, offset) {
             return `${chats}\nNext page /get_users_${offset}`
+        },
+
+        send_message_to_user: function (text) {
+            return `Ադմինի կողմից եկած նամակ\n${text}`
+        },
+
+        send_message_to_user_for_admin: function (text) {
+            return `Նամակն ուղղարկվել է\n${text}`
         },
 
         success_approve_joke: function () {
