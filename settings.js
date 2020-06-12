@@ -49,7 +49,7 @@ module.exports = {
             \nԱլգորիթմի աշխատացնելու համար /333 
             \nԱնեկդոտներ տեսնելու համար /get_jokes_0 
             \nՕգտատերերին տեսնելու համար /get_users_0
-            \nՕգտատերերին նամակ գրելու համար /message_to_user_
+            \nՕգտատերերին նամակ գրելու համար / message_to_user_chatId_
             \n18+ Անեկդոտների Քանակն ${over18CountJokes}, Մնացածն ${low18CountJokes} 
             \n18+ Օգտատերերի Քանակն ${over18CountChats}, Մնացածն ${low18CountChats}`
         },
