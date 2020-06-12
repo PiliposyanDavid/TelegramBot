@@ -118,8 +118,8 @@ module.exports = {
             return `Հարգելի ${firstName}, Ես դադարեցնում եմ Ձեզ ուրախացնել։ Եթե կցանկանաք վերականգնել աշխտանքն ապա սեղմեք /start հրամանն`
         },
 
-        user_info_sending: function (userId, chatId, info) {
-            return `/remove_user_${userId} \n/remove_from_over18_${chatId} \n/get_messages_${chatId},\nName - ${info.firstName} \nLast name - ${info.lastName} \nusername - ${info.username} \nover18 - ${info.over18} \nchatId - ${info.chatId} \nuserId - ${info.userId} `
+        user_info_sending: function (info, offset = 0) {
+            return `/remove_user_${info.userId} \n/remove_from_over18_${info.chatId} \n/get_messages_${info.chatId},\nName - ${info.firstName} \nLast name - ${info.lastName} \nusername - ${info.username} \nover18 - ${info.over18} \nchatId - ${info.chatId} \nuserId - ${info.userId}\nNext page /get_users_${offset}`
         },
 
         jokes_send_with_offset: function (joke, offset) {
@@ -156,6 +156,7 @@ module.exports = {
 
         spam_message: `Please leave this chat`,
         finish_jokes: `Անեկդոտներն ավարտվել են`,
+        finish_users: `Օգտատերերն ավարտվել են`,
         change_over18: "Շնորհակալություն, Ձեր կարգավիճակի փոփոխությունն կատարված է, փոփոխությունն չեղարկելու համար ուղղարկեք /cancel_over18 հրամանն",
         change_low18: "Շնորհակալություն, Ձեր կարգավիճակի փոփոխությունն կատարված է, փոփոխությունն չեղարկելու համար ուղղարկեք /over18 հրամանն",
         unknown_case: "Անահասկանալի հրաման, Եթե հրամանն պատասխան ակնկալող է ապա կկապնվենեք Ձեզ հետ"

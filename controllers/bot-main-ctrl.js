@@ -189,7 +189,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     try {
                         userId = parseInt(userId);
                         const info = await chatsService.getUserInfoByUserId(userId);
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.user_info_sending(userId, info.chatId, info));
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.user_info_sending(info));
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
                         await mainBotService.sendMessageToChat(chatId, settings.messages.error_getting_info(e, sentMessage));
@@ -252,9 +252,22 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     try {
                         let offset = parseInt(sentMessage.replace("/get_users_", ""));
                         let chats = await chatsService.getChats(offset, 20);
-                        if (!chats.length) chats = "Օգտատերերն ավարտվել են";
 
-                        await mainBotService.sendMessageToChat(chatId, settings.messages.chats_send_with_offset(JSON.stringify(chats), offset + 20));
+                        if (!chats.length) {
+                            await mainBotService.sendMessageToChat(chatId, settings.messages.finish_users);
+                            return res.status(200).send({statusText: "OK"});
+                        }
+
+                        for (const chat of chats) {
+                            await mainBotService.sendMessageToChat(chatId, settings.messages.user_info_sending({
+                                over18: chat.over_18,
+                                lastName: chat.last_name,
+                                firstName: chat.first_name,
+                                username: chat.username,
+                                chatId: chat.chat_id,
+                                userId: chat.user_id
+                            }, offset + 20));
+                        }
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
                         await mainBotService.sendMessageToChat(chatId, settings.messages.parse_error(e, sentMessage));

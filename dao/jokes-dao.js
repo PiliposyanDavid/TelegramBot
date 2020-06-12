@@ -50,7 +50,7 @@ class JokesDao {
     }
 
     updateOver18(id, isOver18) {
-        return this.getCollection().findOneAndUpdate({_id: id}, {$set: {over_18: isOver18}});
+        return this.getCollection().findOneAndUpdate({_id: id}, {$set: {over_18: isOver18}}, {new: true});
     }
 
     remove(id) {
