@@ -101,8 +101,6 @@ class ChatsService {
         if (!chat) return;
 
         return {
-            created: chat.created,
-            updated: chat.updated,
             over18: chat.over_18,
             lastName: chat.last_name,
             firstName: chat.first_name,
