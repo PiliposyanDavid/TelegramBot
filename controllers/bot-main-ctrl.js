@@ -205,10 +205,11 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
                         if (!jokes.length) {
                             await mainBotService.sendMessageToChat(chatId, settings.messages.finish_jokes);
+                            return res.status(200).send({statusText: "OK"});
                         }
 
                         for (const joke of jokes) {
-                            await mainBotService.sendMessageToChat(chatId, settings.messages.jokes_send_with_offset(JSON.stringify(jokes), offset + 5));
+                            await mainBotService.sendMessageToChat(chatId, settings.messages.jokes_send_with_offset(joke, offset + 5));
                         }
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
