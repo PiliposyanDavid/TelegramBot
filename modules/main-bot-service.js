@@ -65,7 +65,7 @@ class MainBotService {
     }
 
     async sendJokeToUserByChatId(chatId) {
-        const chat = this.chatsService.getChatByChatId(chatId);
+        const chat = await this.chatsService.getChatByChatId(chatId);
         try {
             if (!chat || !chat.chat_id) {
                 throw new Error("Fail to find chat, chatId " + chatId);
