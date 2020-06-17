@@ -174,7 +174,8 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     let messagesChatId = sentMessage.replace('/get_messages_', "");
                     try {
                         messagesChatId = parseInt(messagesChatId);
-                        const messages = await chatsService.getMessagesByChatId(messagesChatId);
+                        let messages = await chatsService.getMessagesByChatId(messagesChatId);
+                        messages = messages.slice(-5);
                         await mainBotService.sendMessageToChat(chatId, messages);
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
@@ -265,7 +266,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 if (sentMessage.includes('/get_users_')) {
                     try {
                         let offset = parseInt(sentMessage.replace("/get_users_", ""));
-                        let chats = await chatsService.getChats(offset, 20);
+                        let chats = await chatsService.getChats(offset, 5);
 
                         if (!chats.length) {
                             await mainBotService.sendMessageToChat(chatId, settings.messages.finish_users);
@@ -280,7 +281,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                                 username: chat.username,
                                 chatId: chat.chat_id,
                                 userId: chat.user_id
-                            }, offset + 20));
+                            }, offset + 5));
                         }
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
