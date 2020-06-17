@@ -20,7 +20,7 @@ async function dbBootstrap(container) {
     };
 
     mongoose.connect(dbConnectionString, connectionOptions);
-    mongoose.set('debug', true);
+    // mongoose.set('debug', true);
 
     // require('./models/jokes');
     // require('./models/chats');
