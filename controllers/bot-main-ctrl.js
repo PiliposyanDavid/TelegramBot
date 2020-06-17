@@ -176,7 +176,10 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                         messagesChatId = parseInt(messagesChatId);
                         let messages = await chatsService.getMessagesByChatId(messagesChatId);
                         messages = messages.slice(-5);
-                        await mainBotService.sendMessageToChat(chatId, messages);
+                        for (const ms of messages) {
+                            await mainBotService.sendMessageToChat(chatId, ms);
+
+                        }
                     } catch (e) {
                         logger.error("cant parse userId to number", e);
                         await mainBotService.sendMessageToChat(chatId, settings.messages.error_getting_messages(e, sentMessage));
