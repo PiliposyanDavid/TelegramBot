@@ -39,7 +39,7 @@ class MainBotService {
                 await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
             } catch (e) {
                 logger.error("Error in job process for user", chat.user_id, e);
-                await this.sendMessageToAllAdminsChat("Error in job process for user " + chat.user_id + ", " + e);
+                await this.sendMessageToAllAdminsChat("Error in job process for user " + chat.user_id + ", \n/remove_user_" + chat.user_id + "\n" + e);
             }
         }
 
