@@ -67,6 +67,9 @@ class MainBotService {
     async sendJokeToUserByChatId(chatId) {
         const chat = this.chatsService.getChatByChatId(chatId);
         try {
+            if (!chat || !chat.chat_id) {
+                throw new Error("Fail to find chat, chatId " + chatId);
+            }
             const joke = await this.jokesService.getJokeFromNonReadedForUserAndSorted(chat.user_id, chat.over_18);
             if (!joke || !joke.text) {
                 logger.info(`For ${chat.user_id} user not found joke`);
@@ -83,6 +86,7 @@ class MainBotService {
         } catch (e) {
             logger.error("Error in job process for user", chat.user_id, e);
             await this.sendMessageToAllAdminsChat("Error in job process for user " + chat.user_id + ", " + e);
+            return "!!!!";
         }
     }
 }
