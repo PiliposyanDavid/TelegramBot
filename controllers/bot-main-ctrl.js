@@ -314,6 +314,24 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     return res.status(200).send({statusText: "OK"});
                 }
 
+                if (sentMessage.includes('/joke_to_all')) {
+                    const over18 = sentMessage.includes('/18');
+                    let text = sentMessage.replace('/joke_to_all', "");
+                    text = text.replace('/18', "");
+                    text = text.trim();
+
+                    if (!text) {
+                        await mainBotService.sendMessageToChat(chatId, settings.messages.joke_without_text(firstName));
+                        return res.status(200).send({statusText: "OK"});
+                    }
+
+                    const joke = await jokesService.addJoke(text, over18, userId);
+                    await mainBotService.runJobForSpecifyJoke(joke);
+
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.joke_show_success(firstName));
+                    return res.status(200).send({statusText: "OK"});
+                }
+
                 if (sentMessage.includes('/joke')) {
                     const over18 = sentMessage.includes('/18');
                     let text = sentMessage.replace('/joke', "");
@@ -327,7 +345,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
                     await jokesService.addJoke(text, over18, userId);
 
-                    await mainBotService.sendMessageToChat(chatId, settings.messages.admin_joke_to_review(firstName));
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.admin_joke_to_review(firstName, over18));
                     return res.status(200).send({statusText: "OK"});
                 }
 

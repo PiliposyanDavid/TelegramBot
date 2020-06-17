@@ -46,6 +46,43 @@ class MainBotService {
         logger.info("finish successfully !!!")
     }
 
+    async runJobForSpecifyJoke(joke) {
+        if (!joke || !joke.text || !joke._id) {
+            await this.sendMessageToAllAdminsChat("invalid joke," + JSON.stringify(joke));
+            return null;
+        }
+
+        logger.info("Start job");
+        const chats = await this.chatsService.getAllChats();
+        const chatIds = (chats || [])
+            .map((chat) => chat.chat_id)
+            .filter(Boolean);
+
+        if (!chatIds.length) {
+            logger.error("chat ids not found");
+            return;
+        } else {
+            logger.info(`Chat ids length ${chatIds.length}`);
+        }
+
+
+        for (const chat of chats) {
+            try {
+                logger.info(`ChatId is ${chat.chat_id}, joke for this user - ${joke.text}`);
+
+                await this.sendMessageToChat(chat.chat_id, joke.text);
+                await this.chatsService.addMessage(chat.chat_id, "From our - " + joke.text);
+                await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
+                await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
+            } catch (e) {
+                logger.error("Error in job process for user", chat.user_id, e);
+                await this.sendMessageToAllAdminsChat("Error in job process for user " + chat.user_id + ", \n/remove_user_" + chat.user_id + "\n" + e);
+            }
+        }
+
+        logger.info("finish successfully !!!")
+    }
+
     async sendMessageToChat(chatId, message) {
         await axios.post(`${this.settings.telegram_bot_base_url}${this.settings.api_token}/sendMessage`,
             {

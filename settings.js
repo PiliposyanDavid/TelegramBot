@@ -44,8 +44,8 @@ module.exports = {
             \n/remove_user_created_joke_${jokeId}`
         },
 
-        admin_joke_to_review: function (firstName) {
-            return `Հարգելի ${firstName}, Անեկդոտն բարեհաջող ավելացվել է`
+        admin_joke_to_review: function (firstName, isOver18) {
+            return `Հարգելի ${firstName}, Անեկդոտն բարեհաջող ավելացվել է, 18+ ${isOver18}`
         },
 
         joke_show_success: function (firstName) {
