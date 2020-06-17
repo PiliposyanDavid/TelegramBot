@@ -85,12 +85,12 @@ class ChatsService {
     async getMessagesByChatId(chatId) {
         const chat = await this.chatsDao.findChatByChatId(chatId);
         if (!chat) return;
-        let messages = "";
+        let messages = [];
         chat.messages.forEach(msg => {
             if (msg.includes("From our - ")) {
                 msg = msg.replace("From our - ", "We - ");
             } else msg = "Our - " + msg;
-            messages = messages + (msg + "\n");
+            messages.push(msg)
         });
 
         return messages;
