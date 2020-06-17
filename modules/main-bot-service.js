@@ -63,6 +63,28 @@ class MainBotService {
                 });
         }
     }
+
+    async sendJokeToUserByChatId(chatId) {
+        const chat = this.chatsService.getChatByChatId(chatId);
+        try {
+            const joke = await this.jokesService.getJokeFromNonReadedForUserAndSorted(chat.user_id, chat.over_18);
+            if (!joke || !joke.text) {
+                logger.info(`For ${chat.user_id} user not found joke`);
+            }
+
+            logger.info(`ChatId is ${chat.chat_id}, joke for this user - ${joke.text}`);
+
+            await this.sendMessageToChat(chat.chat_id, joke.text);
+            await this.chatsService.addMessage(chat.chat_id, "From our - " + joke.text);
+            await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
+            await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
+
+            return joke.text;
+        } catch (e) {
+            logger.error("Error in job process for user", chat.user_id, e);
+            await this.sendMessageToAllAdminsChat("Error in job process for user " + chat.user_id + ", " + e);
+        }
+    }
 }
 
 module.exports = MainBotService;
