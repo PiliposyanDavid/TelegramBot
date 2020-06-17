@@ -53,7 +53,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             }
 
             async function handleInitialCase() {
-                await mainBotService.sendMessageToAllAdminsChat(settings.messages.join_to_bot(username, userId));
+                await mainBotService.sendMessageToAllAdminsChat(settings.messages.join_to_bot(username, userId, chatId));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.initial_case(firstName));
                 return res.status(200).send({statusText: "OK"});
             }
