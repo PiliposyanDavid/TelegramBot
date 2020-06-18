@@ -121,7 +121,7 @@ class ChatsService {
             return;
         }
 
-        return this.stoppedChatsDao.create(chat.chat_id, chat.first_name, chat.last_name, chat.user_id, chat.messages, chat.readed_jokes_ids, chat.over_18);
+        return this.stoppedChatsDao.create(chat.chat_id, chat.first_name, chat.last_name, chat.user_id, chat.username, chat.messages, chat.readed_jokes_ids, chat.over_18);
     }
 
     getStoppedChat(userId) {
