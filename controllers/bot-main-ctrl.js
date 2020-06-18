@@ -53,6 +53,15 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             }
 
             async function handleInitialCase() {
+                const chat = await chatsService.getStoppedChat(userId);
+                if (chat) {
+                    await chatsService.removeChatByUserId(userId);
+
+                    await mainBotService.sendMessageToAllAdminsChat(settings.messages.rejoin_to_bot(username, userId, chatId));
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.twice_case(firstName));
+                    return res.status(200).send({statusText: "OK"});
+                }
+
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.join_to_bot(username, userId, chatId));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.initial_case(firstName));
                 return res.status(200).send({statusText: "OK"});
@@ -60,6 +69,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
             async function stopBotForUser() {
                 await chatsService.removeChatByUserId(userId);
+                await chatsService.addChatToStoppedChats(chatId);
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.success_stop_for_user(username, userId));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.success_stop_request(firstName));
                 return res.status(200).send({statusText: "OK"});

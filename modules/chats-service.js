@@ -2,8 +2,10 @@ const assert = require('assert');
 const logger = require('log4js').getLogger('ChatsService.srv');
 
 class ChatsService {
-    constructor(chatsDao) {
+    constructor(chatsDao, stoppedChatsDao) {
         this.chatsDao = chatsDao;
+        this.stoppedChatsDao = stoppedChatsDao;
+
     }
 
     async createIfNotExists(chatId, firstName, lastName, userId, username) {
@@ -108,6 +110,30 @@ class ChatsService {
             chatId: chat.chat_id,
             userId: chat.user_id
         };
+    }
+
+    async addChatToStoppedChats(chatId) {
+        assert(chatId, "chatId missed");
+
+        const chat = await this.chatsDao.findChatByChatId(chatId);
+        if (!chat) {
+            logger.error("chat dos not exist", chatId)
+        }
+
+        return this.stoppedChatsDao.create(chat.chat_id, chat.first_name, chat.last_name, chat.user_id, chat.messages, chat.readed_jokes_ids, chat.over_18);
+    }
+
+    getStoppedChat(userId) {
+        assert(userId, "userId missed");
+
+        return this.stoppedChatsDao.findChatByUserId(userId);
+    }
+
+
+    removeStoppedChat(userId) {
+        assert(userId, "userId missed");
+
+        return this.stoppedChatsDao.deleteByUserId(userId);
     }
 }
 
