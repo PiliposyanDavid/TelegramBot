@@ -5,7 +5,7 @@ const {asValue} = require('@shahen.poghosyan/awilix');
 async function dbBootstrap(container) {
     mongoose.Promise = Promise;
 
-    const dbConnectionString = process.env.MONGODB_URI;
+    const dbConnectionString = process.env.MONGODB_URI || "mongodb://localhost:27020/mydb";;
 
     const connectionOptions = {
         useNewUrlParser: true,
