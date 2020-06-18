@@ -117,7 +117,8 @@ class ChatsService {
 
         const chat = await this.chatsDao.findChatByChatId(chatId);
         if (!chat) {
-            logger.error("chat dos not exist", chatId)
+            logger.error("chat dos not exist", chatId);
+            return;
         }
 
         return this.stoppedChatsDao.create(chat.chat_id, chat.first_name, chat.last_name, chat.user_id, chat.messages, chat.readed_jokes_ids, chat.over_18);
