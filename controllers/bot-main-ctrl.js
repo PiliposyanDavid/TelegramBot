@@ -55,7 +55,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             async function handleInitialCase() {
                 const chat = await chatsService.getStoppedChat(userId);
                 if (chat) {
-                    await chatsService.removeChatByUserId(userId);
+                    await chatsService.removeStoppedChat(userId);
 
                     await mainBotService.sendMessageToAllAdminsChat(settings.messages.rejoin_to_bot(username, userId, chatId));
                     await mainBotService.sendMessageToChat(chatId, settings.messages.twice_case(firstName));
