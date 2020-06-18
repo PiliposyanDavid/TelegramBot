@@ -68,8 +68,8 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             }
 
             async function stopBotForUser() {
-                await chatsService.removeChatByUserId(userId);
                 await chatsService.addChatToStoppedChats(chatId);
+                await chatsService.removeChatByUserId(userId);
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.success_stop_for_user(username, userId));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.success_stop_request(firstName));
                 return res.status(200).send({statusText: "OK"});
