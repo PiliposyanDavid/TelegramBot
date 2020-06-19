@@ -8,11 +8,9 @@ class ChatsService {
 
     }
 
-    async createIfNotExists(chatId, firstName, lastName, userId, username) {
+    async createIfNotExists(chatId, firstName = "", lastName = "", userId, username = "") {
         assert(chatId, "chatId missed");
         assert(userId, "userId missed");
-        assert(lastName, "lastName missed");
-        assert(firstName, "firstName missed");
 
         const chat = await this.chatsDao.findChatByUserId(userId);
         if (chat) {
