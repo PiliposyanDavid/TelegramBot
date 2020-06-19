@@ -15,7 +15,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
             if (!username) username = `${firstName} ${lastName}`;
             sentMessage = sentMessage.trim();
-            // logger.info("info message", sentMessage);
+            logger.info("info message", sentMessage);
 
             await chatsService.createIfNotExists(chatId, firstName, lastName, userId, username);
             await chatsService.addMessage(chatId, sentMessage);
