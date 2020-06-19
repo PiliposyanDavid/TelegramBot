@@ -8,8 +8,8 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
         try {
             const chatId = req.body.message.chat.id;
             const userId = +req.body.message.from.id;
-            const firstName = req.body.message.from.first_name;
-            const lastName = req.body.message.from.last_name;
+            const firstName = req.body.message.from.first_name || "";
+            const lastName = req.body.message.from.last_name || "";
             let sentMessage = req.body.message.text;
             let username = req.body.message.from.username;
 
