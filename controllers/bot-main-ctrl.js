@@ -20,6 +20,10 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             await chatsService.createIfNotExists(chatId, firstName, lastName, userId, username);
             await chatsService.addMessage(chatId, sentMessage);
 
+            if (sentMessage === "/info") {
+                return await getOurInfo();
+            }
+
             if (settings.ADMIN_USERS_IDS.includes(userId)) {
                 return await handleAdminQueries();
             }
@@ -36,10 +40,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 return await changeUserToOver18();
             }
 
-
-            if (sentMessage === "/info") {
-                return await getOurInfo();
-            }
 
             if (sentMessage === "/cancel_over18") {
                 return await changeUserToLow18();
