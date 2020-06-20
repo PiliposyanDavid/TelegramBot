@@ -34,7 +34,6 @@ class MainBotService {
                 logger.info(`ChatId is ${chat.chat_id}, joke for this user - ${joke.text}`);
 
                 await this.sendMessageToChat(chat.chat_id, joke.text);
-                await this.chatsService.addMessage(chat.chat_id, "From our - " + joke.text);
                 await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
                 await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
             } catch (e) {
@@ -71,7 +70,6 @@ class MainBotService {
                 logger.info(`ChatId is ${chat.chat_id}, joke for this user - ${joke.text}`);
 
                 await this.sendMessageToChat(chat.chat_id, joke.text);
-                await this.chatsService.addMessage(chat.chat_id, "From our - " + joke.text);
                 await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
                 await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
             } catch (e) {
@@ -84,6 +82,7 @@ class MainBotService {
     }
 
     async sendMessageToChat(chatId, message) {
+        await this.chatsService.addMessage(chatId, "From our - " + message);
         await axios.post(`${this.settings.telegram_bot_base_url}${this.settings.api_token}/sendMessage`,
             {
                 chat_id: chatId,
@@ -115,7 +114,6 @@ class MainBotService {
             logger.info(`ChatId is ${chat.chat_id}, joke for this user - ${joke.text}`);
 
             await this.sendMessageToChat(chat.chat_id, joke.text);
-            await this.chatsService.addMessage(chat.chat_id, "From our - " + joke.text);
             await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
             await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
 

@@ -36,6 +36,11 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 return await changeUserToOver18();
             }
 
+
+            if (sentMessage === "/info") {
+                return await getOurInfo();
+            }
+
             if (sentMessage === "/cancel_over18") {
                 return await changeUserToLow18();
             }
@@ -79,6 +84,25 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 await chatsService.updateUserOver18(chatId, true);
                 await mainBotService.sendMessageToChat(chatId, settings.messages.change_over18);
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_over18(username, chatId));
+                return res.status(200).send({statusText: "OK"});
+            }
+
+            async function getOurInfo() {
+                const over18CountChats = (await chatsService.getChatsCount(true)) || 0;
+                const low18CountChats = (await chatsService.getChatsCount(false)) || 0;
+
+                const over18CountJokes = (await jokesService.getJokesCount(true)) || 0;
+                const low18CountJokes = (await jokesService.getJokesCount(false)) || 0;
+
+                const chatsCount = over18CountChats + low18CountChats;
+                const jokesCount = over18CountJokes + low18CountJokes;
+
+                const roundedJokesString = Math.ceil(jokesCount / 100) * 100 + "+";
+                const roundedChatsString = Math.ceil(chatsCount / 10) * 10 + "+";
+
+
+                await mainBotService.sendMessageToChat(chatId, settings.messages.about_us(roundedChatsString, roundedJokesString));
+                await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_info(username, chatId, userId));
                 return res.status(200).send({statusText: "OK"});
             }
 

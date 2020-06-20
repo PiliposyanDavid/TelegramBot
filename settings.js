@@ -11,6 +11,11 @@ module.exports = {
                     \nՀաճելի ժամանց Ձեզ։`
         },
 
+        about_us: function (usersCountString, jokesCountString) {
+            return `Հարգելի օգտատեր, բոտն ստեղծվել է Մարտի 17-ին, Ներկա պահին բոտին միացած մարդկանց քանակն է - ${usersCountString}, բոտում անեկդոտների քանակն - ${jokesCountString} 
+                    \nՀաճելի ժամանց Ձեզ։`
+        },
+
         twice_case: function (firstName) {
             return `Հարգելի ${firstName} 👋, Շնորհակալություն մեր համակարգին կրկին միանալու համար 
                     \nԵթե կցանկանաք ստանալ 18+ անեկդոտներ ապա սեխմեք /over18 հրամանն 🔞
@@ -45,13 +50,20 @@ module.exports = {
             \n${err}`
         },
 
-        request_to_over18: function (firstName, chatId) {
-            return `${firstName} - ը միացել է մեր համակարգի 18+ մասին, id ${chatId} հեռացնելու համար 
-            \n/remove_from_over18_${chatId}`
+        request_to_info: function (firstName, chatId, userId) {
+            return `${firstName} - ը մեր մասին տեղեկություն է խնդրել 
+                    \n/get_messages_${chatId},
+                    \n/get_user_info_${userId},
+                    \n/joke_to_user_${chatId},`
         },
 
         request_to_low18: function (firstName, chatId) {
             return `${firstName} - ը չեղարկել է մեր համակարգի 18+ մասը, id ${chatId}`
+        },
+
+        request_to_over18: function (firstName, chatId) {
+            return `${firstName} - ը միացել է մեր համակարգի 18+ մասին, id ${chatId} հեռացնելու համար 
+            \n/remove_from_over18_${chatId}`
         },
 
         request_to_create_joke: function (firstName, userId, text, jokeId) {
