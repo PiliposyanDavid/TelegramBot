@@ -13,7 +13,7 @@ module.exports = {
         },
 
         about_us: function (usersCountString, jokesCountString) {
-            return `Հարգելի օգտատեր, բոտն ստեղծվել է Մարտի 17-ին, Ներկա պահին բոտին միացած մարդկանց քանակն է - ${usersCountString}, բոտում անեկդոտների քանակն - ${jokesCountString} 
+            return `Հարգելի օգտատեր, բոտն ստեղծվել է Մարտի 17-ին, Ներկա պահին բոտին միացած մարդկանց քանակն է՝ ${usersCountString}, բոտում անեկդոտների քանակն՝ ${jokesCountString} 
                     \nՀաճելի ժամանց Ձեզ։`
         },
 
