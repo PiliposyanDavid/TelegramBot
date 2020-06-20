@@ -40,6 +40,11 @@ module.exports = {
             \n/joke_to_user_${chatId}`
         },
 
+        global_error: function (err) {
+            return `համակարգի սխալանք 
+            \n${err}`
+        },
+
         request_to_over18: function (firstName, chatId) {
             return `${firstName} - ը միացել է մեր համակարգի 18+ մասին, id ${chatId} հեռացնելու համար 
             \n/remove_from_over18_${chatId}`

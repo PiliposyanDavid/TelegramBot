@@ -375,6 +375,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             }
         } catch (e) {
             logger.error("Error", e);
+            await mainBotService.sendMessageToAllAdminsChat(settings.messages.global_error(e));
             return res.status(200).send({statusText: "OK"});
         }
     }
