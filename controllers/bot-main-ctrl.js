@@ -25,7 +25,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 return await handleAdminQueries();
             }
 
-            if (sentMessage === "/info") {
+            if (sentMessage === "/info" || sentMessage.includes("/info")) {
                 return await getOurInfo();
             }
 
