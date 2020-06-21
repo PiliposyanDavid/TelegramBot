@@ -35,7 +35,6 @@ class MainBotService {
 
                 await this.sendMessageToChat(chat.chat_id, joke.text);
 
-                await this.sendMessageToChat(chat.chat_id, "Բոտի մասին տեղեկություն ստանալու համար հավաքեք /info հրամանն");
                 await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
                 await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
             } catch (e) {
