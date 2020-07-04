@@ -108,7 +108,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
                 const infoPrefix = userCreatedJokesInfo.length
                     ? "Ձեր կողմից գրված անեկդոտների մասին տեղեկությունն ստորև։"
-                    : "Դուք դեռ չեք գրել անեկդոտ։ Ձեր կողմից անեկդոտ գրվելուն պես կարող եք տեսնել այդ անեկդոտի մասին տեղեկություն։" ;
+                    : "Ցավոք դուք դեռ չեք գրել անեկդոտ։ Ձեր կողմից անեկդոտ գրվելուն պես կարող եք տեսնել այդ անեկդոտի մասին տեղեկություն։" ;
 
                 const readedJokesCount = await chatsService.getUserReadedJokesCount(userId);
                 await mainBotService.sendMessageToChat(chatId, settings.messages.about_us(roundedChatsString, roundedJokesString, readedJokesCount, infoPrefix));
