@@ -41,7 +41,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 return await changeUserToOver18();
             }
 
-
             if (sentMessage === "/cancel_over18") {
                 return await changeUserToLow18();
             }
@@ -65,11 +64,15 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
                     await mainBotService.sendMessageToAllAdminsChat(settings.messages.rejoin_to_bot(username, userId, chatId));
                     await mainBotService.sendMessageToChat(chatId, settings.messages.twice_case(firstName));
+                    await mainBotService.sendJokeToUserByChatId(chatId);
+                    await mainBotService.sendMessageToChat(chatId, settings.messages.join_to_over18(firstName));
                     return res.status(200).send({statusText: "OK"});
                 }
 
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.join_to_bot(username, userId, chatId));
                 await mainBotService.sendMessageToChat(chatId, settings.messages.initial_case(firstName));
+                await mainBotService.sendJokeToUserByChatId(chatId);
+                await mainBotService.sendMessageToChat(chatId, settings.messages.join_to_over18(firstName));
                 return res.status(200).send({statusText: "OK"});
             }
 
@@ -98,7 +101,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 const chatsCount = over18CountChats + low18CountChats;
                 const jokesCount = over18CountJokes + low18CountJokes;
 
-                const roundedJokesString = Math.ceil(jokesCount / 100) * 100 + "+";
+                const roundedJokesString = Math.ceil(jokesCount / 10) * 10 + "+";
                 const roundedChatsString = Math.ceil(chatsCount / 10) * 10 + "+";
 
 
