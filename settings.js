@@ -12,8 +12,8 @@ module.exports = {
                     \nՀաճելի ժամանց Ձեզ։`
         },
 
-        about_us: function (usersCountString, jokesCountString) {
-            return `Հարգելի օգտատեր, բոտն ստեղծվել է Մարտի 17-ին, Ներկա պահին բոտին միացած մարդկանց քանակն է՝ ${usersCountString}, բոտում անեկդոտների քանակն՝ ${jokesCountString} 
+        about_us: function (usersCountString, jokesCountString, readedJokesCount, infoPrefix) {
+            return `Հարգելի օգտատեր, բոտն ստեղծվել է Մարտի 17-ին, Ներկա պահին բոտին միացած մարդկանց քանակն է՝ ${usersCountString}, բոտում անեկդոտների քանակն՝ ${jokesCountString}, Ձեզ ուղղարկվել է ${readedJokesCount} հատ անեկդոտ, ${infoPrefix}
                     \nՀաճելի ժամանց Ձեզ։`
         },
 

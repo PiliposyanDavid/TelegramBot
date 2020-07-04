@@ -96,6 +96,19 @@ class JokesService {
         await this.mainBotService.sendMessageToChat(reviewedJoke.chat_id, this.settings.messages.reject_joke_message(chat.first_name, reviewedJoke.text))
 
     }
+
+    async getUserCreatedJokesWithScores(userId) {
+        assert(userId, "userId missed");
+
+        let jokes = await this.jokesDao.findUserCreatedJokes(userId);
+        jokes = (jokes || []).map((joke) => {
+            if (joke && joke.text) {
+                return `Անեկդոտ - ${joke.text},\n Դիտումների քանակն - ${(joke.readed_user_ids || []).length}`;
+            }
+        });
+
+        return jokes;
+    }
 }
 
 module.exports = JokesService;

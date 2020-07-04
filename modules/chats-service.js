@@ -128,6 +128,14 @@ class ChatsService {
         return this.stoppedChatsDao.findChatByUserId(userId);
     }
 
+    async getUserReadedJokesCount(userId) {
+        assert(userId, "userId missed");
+        const chat = await this.chatsDao.findChatByUserId(userId);
+        if (!chat) return 0;
+
+        return chat.readed_jokes_ids || 0;
+    }
+
 
     removeStoppedChat(userId) {
         assert(userId, "userId missed");

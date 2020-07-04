@@ -23,6 +23,10 @@ class JokesDao {
             .create({over_18: over18, text: text, owner_id: ownerId, created: Date.now()});
     }
 
+    findUserCreatedJokes(userId) {
+        return this.getCollection().find({owner_id: userId}).lean().exec();
+    }
+
     updateJokeReadedForUser(jokeId, userId) {
         return this.getCollection()
             .findOneAndUpdate({_id: jokeId}, {$addToSet: {readed_user_ids: userId}});

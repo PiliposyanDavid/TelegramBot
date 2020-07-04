@@ -104,8 +104,22 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                 const roundedJokesString = Math.ceil(jokesCount / 10) * 10 + "+";
                 const roundedChatsString = Math.ceil(chatsCount / 10) * 10 + "+";
 
+                const userCreatedJokesInfo = await jokesService.getUserCreatedJokesWithScores(userId);
 
-                await mainBotService.sendMessageToChat(chatId, settings.messages.about_us(roundedChatsString, roundedJokesString));
+                const infoPrefix = userCreatedJokesInfo.length
+                    ? "Ձեր կողմից գրված անեկդոտների մասին տեղեկությունն ստորև։"
+                    : "Դուք դեռ չեք գրել անեկդոտ։ Ձեր կողմից անեկդոտ գրվելուն պես կարող եք տեսնել այդ անեկդոտի մասին տեղեկություն։" ;
+
+                const readedJokesCount = await chatsService.getUserReadedJokesCount(userId);
+                await mainBotService.sendMessageToChat(chatId, settings.messages.about_us(roundedChatsString, roundedJokesString, readedJokesCount, infoPrefix));
+
+                if (userCreatedJokesInfo.length) {
+                    for (const info of userCreatedJokesInfo) {
+                        await mainBotService.sendMessageToChat(chatId, info);
+                    }
+                }
+
+
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.request_to_info(username, chatId, userId));
                 return res.status(200).send({statusText: "OK"});
             }
