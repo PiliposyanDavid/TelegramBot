@@ -1,5 +1,5 @@
 module.exports = {
-    api_token: "1134768703:AAGjZ6VSAO8G1sLCZZ85g2mYpRM0QyvLBoU",
+    api_token: process.env.API_TOKEN,
     telegram_bot_base_url: "https://api.telegram.org/bot",
     ADMIN_USERS_CHATS_IDS: [938812149],
     ADMIN_USERS_IDS: [938812149],
