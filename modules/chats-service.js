@@ -133,7 +133,7 @@ class ChatsService {
         const chat = await this.chatsDao.findChatByUserId(userId);
         if (!chat) return 0;
 
-        return chat.readed_jokes_ids || 0;
+        return chat.readed_jokes_ids.length || 0;
     }
 
 
