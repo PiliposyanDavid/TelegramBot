@@ -64,7 +64,6 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
                     await mainBotService.sendMessageToAllAdminsChat(settings.messages.rejoin_to_bot(username, userId, chatId));
                     await mainBotService.sendMessageToChat(chatId, settings.messages.twice_case(firstName));
-                    await mainBotService.sendJokeToUserByChatId(chatId);
                     await mainBotService.sendMessageToChat(chatId, settings.messages.join_to_over18(firstName));
                     return res.status(200).send({statusText: "OK"});
                 }

@@ -102,7 +102,7 @@ class MainBotService {
     }
 
     async sendJokeToUserByChatId(chatId) {
-        setTimeout(await this.addTimeOutToSendJokeUser(chatId), 60000);
+        setTimeout(this.addTimeOutToSendJokeUser(chatId)(), 60000);
     }
 
     async addTimeOutToSendJokeUser(chatId) {
