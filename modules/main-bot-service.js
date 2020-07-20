@@ -102,6 +102,10 @@ class MainBotService {
     }
 
     async sendJokeToUserByChatId(chatId) {
+        setTimeout(this.addTimeOutToSendJokeUser(chatId), 60000);
+    }
+
+    async addTimeOutToSendJokeUser(chatId) {
         const chat = await this.chatsService.getChatByChatId(chatId);
         try {
             if (!chat || !chat.chat_id) {
@@ -118,7 +122,9 @@ class MainBotService {
             await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
             await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
 
+            await this.sendMessageToAllAdminsChat("Success joke send\n" + joke);
             return joke.text;
+
         } catch (e) {
             logger.error("Error in job process for user", chat.user_id, e);
             await this.sendMessageToAllAdminsChat("Error in job process for user " + chat.user_id + ", " + e);
