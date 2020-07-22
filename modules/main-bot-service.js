@@ -41,7 +41,7 @@ class MainBotService {
                 logger.error("Error in job process for user", chat.user_id, e);
                 await this.sendMessageToAllAdminsChat("Error in job process for user " + chat.user_id +
                     ", \n/remove_user_" + chat.user_id +
-                    ", \n//get_user_info_" + chat.user_id + "\n" + e);
+                    ", \n/get_user_info_" + chat.user_id + "\n" + e);
             }
         }
 
