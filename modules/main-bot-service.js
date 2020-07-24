@@ -119,7 +119,7 @@ class MainBotService {
             await this.jokesService.updateJokeReadedForUser(joke._id, chat.user_id);
             await this.chatsService.addJokeIdToReadedForUser(chat.user_id, joke._id);
 
-            await this.sendMessageToAllAdminsChat("Success joke send\n" + joke.text);
+            // await this.sendMessageToAllAdminsChat("Success joke send\n" + joke.text);
             return joke.text;
 
         } catch (e) {
