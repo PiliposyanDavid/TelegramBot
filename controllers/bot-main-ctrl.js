@@ -58,7 +58,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
             }
 
             async function handleInitialCase() {
-                const chat = await chatsService.getStoppedChat(userId);
+                let chat = await chatsService.getStoppedChat(userId);
                 if (chat) {
                     await chatsService.removeStoppedChat(userId);
 
@@ -66,6 +66,14 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
                     await mainBotService.sendMessageToChat(chatId, settings.messages.twice_case(firstName));
                     await mainBotService.sendMessageToChat(chatId, settings.messages.join_to_over18(firstName));
                     return res.status(200).send({statusText: "OK"});
+                } else {
+
+                    chat = await chatsService.getChatByUserId(userId);
+                    if (chat) {
+                        await mainBotService.sendMessageToAllAdminsChat(username + "-ը վերամիացել է");
+                        await mainBotService.sendMessageToChat(chatId, "Դուք արդեն միացած էք համակարգին");
+                        return res.status(200).send({statusText: "OK"});
+                    }
                 }
 
                 await mainBotService.sendMessageToAllAdminsChat(settings.messages.join_to_bot(username, userId, chatId));
@@ -107,7 +115,7 @@ module.exports = function BotMainCtrl(mainBotService, chatsService, jokesService
 
                 const infoPrefix = userCreatedJokesInfo.length
                     ? "Ձեր կողմից գրված անեկդոտների մասին տեղեկությունն ստորև։"
-                    : "Ցավոք դուք դեռ չեք գրել անեկդոտ։ Ձեր կողմից անեկդոտ գրվելուն պես կարող եք տեսնել այդ անեկդոտի մասին տեղեկություն։" ;
+                    : "Ցավոք դուք դեռ չեք գրել անեկդոտ։ Ձեր կողմից անեկդոտ գրվելուն պես կարող եք տեսնել այդ անեկդոտի մասին տեղեկություն։";
 
                 const readedJokesCount = await chatsService.getUserReadedJokesCount(userId);
                 await mainBotService.sendMessageToChat(chatId, settings.messages.about_us(roundedChatsString, roundedJokesString, readedJokesCount, infoPrefix));
